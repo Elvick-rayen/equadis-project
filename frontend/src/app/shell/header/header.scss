@@ -1,0 +1,44 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1rem;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+
+  .pi {
+    color: var(--p-primary-color);
+  }
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.acting-as {
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .persona-select {
+  min-width: 15rem;
+}
+
+.group-label {
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .acting-as {
+    display: none;
+  }
+
+  :host ::ng-deep .persona-select {
+    min-width: 10rem;
+    max-width: 12rem;
+  }
+}

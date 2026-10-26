@@ -1,0 +1,82 @@
+<ng-container *transloco="let t">
+  <div class="page-header">
+    <h1>{{ t('suppliers.title') }}</h1>
+    <p-button icon="pi pi-plus" [label]="t('common.new')" (onClick)="openNew()" />
+  </div>
+
+  <p-table
+    [value]="store.suppliers()"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [totalRecords]="store.totalRecords()"
+    [loading]="store.loading()"
+    [paginator]="true"
+    [first]="first()"
+    [rows]="pageSize"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    sortField="companyName"
+    [sortOrder]="1"
+    dataKey="id"
+    stripedRows
+  >
+    <ng-template #caption>
+      <p-iconfield iconPosition="left">
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          pInputText
+          type="search"
+          [placeholder]="t('common.search')"
+          [attr.aria-label]="t('common.search')"
+          (input)="onSearch($any($event.target).value)"
+        />
+      </p-iconfield>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="companyName">{{ t('suppliers.fields.companyName') }} <p-sortIcon field="companyName" /></th>
+        <th pSortableColumn="contact.name">{{ t('suppliers.fields.contactName') }} <p-sortIcon field="contact.name" /></th>
+        <th pSortableColumn="contact.email">{{ t('suppliers.fields.email') }} <p-sortIcon field="contact.email" /></th>
+        <th>{{ t('suppliers.fields.phone') }}</th>
+        <th pSortableColumn="countryCode">{{ t('suppliers.fields.country') }} <p-sortIcon field="countryCode" /></th>
+        <th><span class="sr-only">{{ t('common.actions') }}</span></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-supplier>
+      <tr>
+        <td>{{ supplier.companyName }}</td>
+        <td>{{ supplier.contact.name }}</td>
+        <td>{{ supplier.contact.email }}</td>
+        <td>{{ supplier.contact.phone }}</td>
+        <td>{{ supplier.countryCode | countryName: language() }} ({{ supplier.countryCode }})</td>
+        <td class="actions">
+          <p-button
+            icon="pi pi-pencil"
+            [label]="t('common.edit')"
+            severity="secondary"
+            size="small"
+            [text]="true"
+            (onClick)="openEdit(supplier)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            [label]="t('common.delete')"
+            severity="danger"
+            size="small"
+            [text]="true"
+            (onClick)="confirmDelete(supplier)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6">{{ t('suppliers.empty') }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-supplier-form-dialog [(visible)]="dialogOpen" [supplier]="editing()" />
+</ng-container>

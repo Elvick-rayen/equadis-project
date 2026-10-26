@@ -1,0 +1,13 @@
+# Per-project ignores live in backend/.gitignore and frontend/.gitignore.
+
+# Local tool settings
+.claude/
+.idea/
+
+# Environment files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,80 @@
+{
+  "app": {
+    "title": "Partnership Portal"
+  },
+  "header": {
+    "actingAs": "Acting as",
+    "language": "Language"
+  },
+  "persona": {
+    "administration": "Administration",
+    "administrator": "Administrator",
+    "suppliers": "Suppliers",
+    "retailers": "Retailers",
+    "supplier": "Supplier",
+    "retailer": "Retailer"
+  },
+  "nav": {
+    "suppliers": "Suppliers",
+    "retailers": "Retailers",
+    "partnerships": "Partnerships",
+    "myOffers": "My offers",
+    "availableOffers": "Available offers",
+    "mySubscriptions": "My subscriptions"
+  },
+  "common": {
+    "new": "New",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "search": "Search",
+    "actions": "Actions",
+    "success": "Success",
+    "error": "Error",
+    "comingSoon": "This screen is not built yet."
+  },
+  "validation": {
+    "required": "This field is required.",
+    "email": "Enter a valid e-mail address.",
+    "phone": "Enter a valid phone number (digits, spaces, +, -, parentheses).",
+    "maxLength": "Maximum {{ max }} characters."
+  },
+  "errors": {
+    "UNKNOWN": "Something went wrong. Please try again.",
+    "NETWORK": "Cannot reach the server. Is the backend running?",
+    "VALIDATION_FAILED": "Some fields are not valid.",
+    "MALFORMED_REQUEST": "The request could not be read.",
+    "INVALID_SORT": "This column cannot be sorted.",
+    "ACTING_AS_REQUIRED": "No persona selected.",
+    "INVALID_ACTING_AS": "The selected persona is not valid.",
+    "FORBIDDEN_ACTION": "This persona is not allowed to do that.",
+    "INVALID_COUNTRY_CODE": "Unknown country.",
+    "INVALID_CONTACT": "The contact details are not valid.",
+    "INVALID_SUPPLIER": "The supplier details are not valid.",
+    "SUPPLIER_NAME_TAKEN": "A supplier with this company name already exists.",
+    "SUPPLIER_NOT_FOUND": "This supplier no longer exists."
+  },
+  "suppliers": {
+    "title": "Suppliers",
+    "newTitle": "New supplier",
+    "editTitle": "Edit supplier",
+    "empty": "No suppliers found.",
+    "created": "Supplier {{ name }} created.",
+    "updated": "Supplier {{ name }} updated.",
+    "deleted": "Supplier {{ name }} deleted.",
+    "deleteTitle": "Delete supplier",
+    "deleteConfirm": "Delete {{ name }}? This cannot be undone.",
+    "fields": {
+      "companyName": "Company name",
+      "contact": "Contact",
+      "contactName": "Contact name",
+      "email": "E-mail",
+      "phone": "Phone",
+      "country": "Country of operation"
+    },
+    "placeholders": {
+      "country": "Select a country"
+    }
+  }
+}

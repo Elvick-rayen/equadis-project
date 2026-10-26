@@ -1,0 +1,4 @@
+spring:
+  flyway:
+    # Demo data so the app can be explored right away.
+    locations: classpath:db/migration,classpath:db/seed

@@ -1,0 +1,80 @@
+{
+  "app": {
+    "title": "Portail des partenariats"
+  },
+  "header": {
+    "actingAs": "Agir en tant que",
+    "language": "Langue"
+  },
+  "persona": {
+    "administration": "Administration",
+    "administrator": "Administrateur",
+    "suppliers": "Fournisseurs",
+    "retailers": "Distributeurs",
+    "supplier": "Fournisseur",
+    "retailer": "Distributeur"
+  },
+  "nav": {
+    "suppliers": "Fournisseurs",
+    "retailers": "Distributeurs",
+    "partnerships": "Partenariats",
+    "myOffers": "Mes offres",
+    "availableOffers": "Offres disponibles",
+    "mySubscriptions": "Mes abonnements"
+  },
+  "common": {
+    "new": "Nouveau",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "search": "Rechercher",
+    "actions": "Actions",
+    "success": "Succès",
+    "error": "Erreur",
+    "comingSoon": "Cet écran n'est pas encore disponible."
+  },
+  "validation": {
+    "required": "Ce champ est obligatoire.",
+    "email": "Saisissez une adresse e-mail valide.",
+    "phone": "Saisissez un numéro de téléphone valide (chiffres, espaces, +, -, parenthèses).",
+    "maxLength": "{{ max }} caractères maximum."
+  },
+  "errors": {
+    "UNKNOWN": "Une erreur est survenue. Veuillez réessayer.",
+    "NETWORK": "Impossible de joindre le serveur. Le backend est-il démarré ?",
+    "VALIDATION_FAILED": "Certains champs ne sont pas valides.",
+    "MALFORMED_REQUEST": "La requête n'a pas pu être lue.",
+    "INVALID_SORT": "Cette colonne ne peut pas être triée.",
+    "ACTING_AS_REQUIRED": "Aucun profil sélectionné.",
+    "INVALID_ACTING_AS": "Le profil sélectionné n'est pas valide.",
+    "FORBIDDEN_ACTION": "Ce profil n'est pas autorisé à effectuer cette action.",
+    "INVALID_COUNTRY_CODE": "Pays inconnu.",
+    "INVALID_CONTACT": "Les coordonnées du contact ne sont pas valides.",
+    "INVALID_SUPPLIER": "Les informations du fournisseur ne sont pas valides.",
+    "SUPPLIER_NAME_TAKEN": "Un fournisseur avec ce nom d'entreprise existe déjà.",
+    "SUPPLIER_NOT_FOUND": "Ce fournisseur n'existe plus."
+  },
+  "suppliers": {
+    "title": "Fournisseurs",
+    "newTitle": "Nouveau fournisseur",
+    "editTitle": "Modifier le fournisseur",
+    "empty": "Aucun fournisseur trouvé.",
+    "created": "Fournisseur {{ name }} créé.",
+    "updated": "Fournisseur {{ name }} modifié.",
+    "deleted": "Fournisseur {{ name }} supprimé.",
+    "deleteTitle": "Supprimer le fournisseur",
+    "deleteConfirm": "Supprimer {{ name }} ? Cette action est irréversible.",
+    "fields": {
+      "companyName": "Nom de l'entreprise",
+      "contact": "Contact",
+      "contactName": "Nom du contact",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "country": "Pays d'activité"
+    },
+    "placeholders": {
+      "country": "Choisissez un pays"
+    }
+  }
+}

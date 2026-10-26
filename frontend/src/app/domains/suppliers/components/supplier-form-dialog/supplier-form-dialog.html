@@ -1,0 +1,89 @@
+<ng-container *transloco="let t">
+  <p-dialog
+    [header]="t(isEdit() ? 'suppliers.editTitle' : 'suppliers.newTitle')"
+    [visible]="visible()"
+    (visibleChange)="visible.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [style]="{ width: '34rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+  >
+    <form class="form" [formGroup]="form" (ngSubmit)="save()">
+      <!-- Lets Enter submit the form; the visible Save button is in the dialog footer. -->
+      <button type="submit" hidden></button>
+      <div class="field">
+        <label for="companyName">{{ t('suppliers.fields.companyName') }} *</label>
+        <input pInputText id="companyName" formControlName="companyName" autocomplete="organization" />
+        @if (showError(form.controls.companyName)) {
+          <p-message severity="error" size="small" variant="simple">
+            @if (form.controls.companyName.hasError('nameTaken')) {
+              {{ t('errors.SUPPLIER_NAME_TAKEN') }}
+            } @else if (form.controls.companyName.hasError('maxlength')) {
+              {{ t('validation.maxLength', { max: 120 }) }}
+            } @else {
+              {{ t('validation.required') }}
+            }
+          </p-message>
+        }
+      </div>
+
+      <div class="field">
+        <label for="countryCode">{{ t('suppliers.fields.country') }} *</label>
+        <p-select
+          inputId="countryCode"
+          formControlName="countryCode"
+          [options]="countries()"
+          optionLabel="name"
+          optionValue="code"
+          [filter]="true"
+          filterBy="name,code"
+          [placeholder]="t('suppliers.placeholders.country')"
+          appendTo="body"
+          fluid
+        >
+          <ng-template #item let-country>{{ country.name }} ({{ country.code }})</ng-template>
+        </p-select>
+        @if (showError(form.controls.countryCode)) {
+          <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+        }
+      </div>
+
+      <fieldset class="group">
+        <legend>{{ t('suppliers.fields.contact') }}</legend>
+
+        <div class="field">
+          <label for="contactName">{{ t('suppliers.fields.contactName') }} *</label>
+          <input pInputText id="contactName" formControlName="contactName" autocomplete="name" />
+          @if (showError(form.controls.contactName)) {
+            <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+          }
+        </div>
+
+        <div class="field">
+          <label for="contactEmail">{{ t('suppliers.fields.email') }} *</label>
+          <input pInputText id="contactEmail" type="email" formControlName="contactEmail" autocomplete="email" />
+          @if (showError(form.controls.contactEmail)) {
+            <p-message severity="error" size="small" variant="simple">
+              {{ t(form.controls.contactEmail.hasError('required') ? 'validation.required' : 'validation.email') }}
+            </p-message>
+          }
+        </div>
+
+        <div class="field">
+          <label for="contactPhone">{{ t('suppliers.fields.phone') }} *</label>
+          <input pInputText id="contactPhone" type="tel" formControlName="contactPhone" autocomplete="tel" placeholder="+33 1 23 45 67 89" />
+          @if (showError(form.controls.contactPhone)) {
+            <p-message severity="error" size="small" variant="simple">
+              {{ t(form.controls.contactPhone.hasError('required') ? 'validation.required' : 'validation.phone') }}
+            </p-message>
+          }
+        </div>
+      </fieldset>
+    </form>
+
+    <ng-template #footer>
+      <p-button [label]="t('common.cancel')" severity="secondary" [text]="true" (onClick)="visible.set(false)" />
+      <p-button [label]="t('common.save')" [loading]="saving()" (onClick)="save()" />
+    </ng-template>
+  </p-dialog>
+</ng-container>

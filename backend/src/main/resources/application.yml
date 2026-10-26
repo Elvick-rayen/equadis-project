@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: portal-backend
+  profiles:
+    # "dev" loads the seed data. Tests use their own profile.
+    default: dev
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/equadis_portal}
+    username: ${DB_USER:portal}
+    password: ${DB_PASSWORD:portal}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway owns the schema; Hibernate only checks the mapping matches it.
+      ddl-auto: validate
+  flyway:
+    locations: classpath:db/migration
+  mvc:
+    problemdetails:
+      enabled: true
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+
+server:
+  port: 8080
+
+portal:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
