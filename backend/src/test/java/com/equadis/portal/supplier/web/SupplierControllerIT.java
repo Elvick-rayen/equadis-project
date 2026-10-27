@@ -17,12 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import com.equadis.portal.shared.actor.CurrentActor;
+import com.equadis.portal.support.TestTokens;
 import com.equadis.portal.support.TestcontainersConfig;
 import com.jayway.jsonpath.JsonPath;
 
@@ -30,11 +32,14 @@ import com.jayway.jsonpath.JsonPath;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Import(TestcontainersConfig.class)
+@Import({ TestcontainersConfig.class, TestTokens.class })
 class SupplierControllerIT {
 
 	@Autowired
 	MockMvc mvc;
+
+	@Autowired
+	TestTokens tokens;
 
 	@Test
 	void createReadUpdateDelete() throws Exception {
@@ -99,7 +104,7 @@ class SupplierControllerIT {
 
 	@Test
 	void onlyTheAdministratorCanWrite() throws Exception {
-		mvc.perform(post("/api/suppliers").header(CurrentActor.HEADER, "SUPPLIER:1")
+		mvc.perform(tokens.as(CurrentActor.supplier(1), post("/api/suppliers"))
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(body(uniqueName("Sneaky"), "FR")))
 			.andExpect(status().isForbidden())
@@ -107,13 +112,37 @@ class SupplierControllerIT {
 	}
 
 	@Test
-	void personaHeaderIsRequiredAndChecked() throws Exception {
+	void aSupplierOnlySeesItsOwnData() throws Exception {
+		String created = mvc.perform(asAdmin(post("/api/suppliers")).content(body(uniqueName("Own Data"), "FR")))
+			.andReturn()
+			.getResponse()
+			.getContentAsString();
+		long ownId = ((Number) JsonPath.read(created, "$.id")).longValue();
+		CurrentActor supplier = CurrentActor.supplier(ownId);
+
+		mvc.perform(tokens.as(supplier, get("/api/suppliers/{id}", ownId))).andExpect(status().isOk());
+		mvc.perform(tokens.as(supplier, get("/api/suppliers/{id}", ownId + 1000)))
+			.andExpect(status().isForbidden())
+			.andExpect(jsonPath("$.code").value("FORBIDDEN_ACTION"));
+		mvc.perform(tokens.as(supplier, get("/api/suppliers")))
+			.andExpect(status().isForbidden())
+			.andExpect(jsonPath("$.code").value("FORBIDDEN_ACTION"));
+		mvc.perform(tokens.as(supplier, get("/api/suppliers/summaries"))).andExpect(status().isForbidden());
+	}
+
+	@Test
+	void aValidTokenIsRequired() throws Exception {
 		mvc.perform(get("/api/suppliers"))
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.code").value("ACTING_AS_REQUIRED"));
-		mvc.perform(get("/api/suppliers").header(CurrentActor.HEADER, "BOSS"))
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.code").value("INVALID_ACTING_AS"));
+			.andExpect(status().isUnauthorized())
+			.andExpect(jsonPath("$.code").value("UNAUTHENTICATED"));
+		mvc.perform(get("/api/suppliers").header(HttpHeaders.AUTHORIZATION, "Bearer not-a-jwt"))
+			.andExpect(status().isUnauthorized())
+			.andExpect(jsonPath("$.code").value("UNAUTHENTICATED"));
+		// A token signed with another key is rejected too.
+		String forged = tokens.tokenFor(CurrentActor.admin());
+		String tampered = forged.substring(0, forged.lastIndexOf('.') + 1) + "AAAA";
+		mvc.perform(get("/api/suppliers").header(HttpHeaders.AUTHORIZATION, "Bearer " + tampered))
+			.andExpect(status().isUnauthorized());
 	}
 
 	@Test
@@ -150,8 +179,8 @@ class SupplierControllerIT {
 			.andExpect(jsonPath("$[*].code").value(hasItem("RETAILER")));
 	}
 
-	private static MockHttpServletRequestBuilder asAdmin(MockHttpServletRequestBuilder request) {
-		return request.header(CurrentActor.HEADER, "ADMIN").contentType(MediaType.APPLICATION_JSON);
+	private MockHttpServletRequestBuilder asAdmin(MockHttpServletRequestBuilder request) {
+		return tokens.as(CurrentActor.admin(), request).contentType(MediaType.APPLICATION_JSON);
 	}
 
 	private static String body(String companyName, String countryCode) {

@@ -2,6 +2,7 @@ package com.equadis.portal.supplier.infrastructure;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +31,11 @@ interface SpringDataSupplierRepository extends JpaRepository<Supplier, Long>, Su
 
 	@Query("select new com.equadis.portal.supplier.SupplierSummary(s.id, s.companyName) from Supplier s where s.id in :ids order by lower(s.companyName)")
 	List<SupplierSummary> findSummaries(@Param("ids") Collection<Long> ids);
+
+	@Query("select new com.equadis.portal.supplier.SupplierSummary(s.id, s.companyName) from Supplier s where s.id = :id")
+	Optional<SupplierSummary> findSummary(@Param("id") long id);
+
+	@Query("select new com.equadis.portal.supplier.SupplierSummary(s.id, s.companyName) from Supplier s where lower(s.companyName) = lower(:name)")
+	Optional<SupplierSummary> findSummaryByCompanyName(@Param("name") String name);
 
 }

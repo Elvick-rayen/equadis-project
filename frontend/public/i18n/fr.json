@@ -4,7 +4,8 @@
   },
   "header": {
     "actingAs": "Agir en tant que",
-    "language": "Langue"
+    "language": "Langue",
+    "signedInAs": "Connecté en tant que"
   },
   "persona": {
     "administration": "Administration",
@@ -38,7 +39,11 @@
     "required": "Ce champ est obligatoire.",
     "email": "Saisissez une adresse e-mail valide.",
     "phone": "Saisissez un numéro de téléphone valide (chiffres, espaces, +, -, parenthèses).",
-    "maxLength": "{{ max }} caractères maximum."
+    "maxLength": "{{ max }} caractères maximum.",
+    "username": "3 à 50 lettres, chiffres, « . », « _ » ou « - ».",
+    "passwordLength": "8 à 72 caractères.",
+    "passwordsMismatch": "Les mots de passe ne correspondent pas.",
+    "url": "Saisissez une adresse web complète, par ex. https://boutique.exemple.fr."
   },
   "errors": {
     "UNKNOWN": "Une erreur est survenue. Veuillez réessayer.",
@@ -46,14 +51,21 @@
     "VALIDATION_FAILED": "Certains champs ne sont pas valides.",
     "MALFORMED_REQUEST": "La requête n'a pas pu être lue.",
     "INVALID_SORT": "Cette colonne ne peut pas être triée.",
-    "ACTING_AS_REQUIRED": "Aucun profil sélectionné.",
-    "INVALID_ACTING_AS": "Le profil sélectionné n'est pas valide.",
+    "INVALID_ACTING_AS": "Ce profil n'est pas valide.",
     "FORBIDDEN_ACTION": "Ce profil n'est pas autorisé à effectuer cette action.",
     "INVALID_COUNTRY_CODE": "Pays inconnu.",
     "INVALID_CONTACT": "Les coordonnées du contact ne sont pas valides.",
     "INVALID_SUPPLIER": "Les informations du fournisseur ne sont pas valides.",
     "SUPPLIER_NAME_TAKEN": "Un fournisseur avec ce nom d'entreprise existe déjà.",
-    "SUPPLIER_NOT_FOUND": "Ce fournisseur n'existe plus."
+    "SUPPLIER_NOT_FOUND": "Ce fournisseur n'existe plus.",
+    "UNAUTHENTICATED": "Veuillez vous connecter.",
+    "SESSION_EXPIRED": "Votre session a expiré. Veuillez vous reconnecter.",
+    "INVALID_CREDENTIALS": "Nom d'utilisateur ou mot de passe incorrect.",
+    "USERNAME_TAKEN": "Ce nom d'utilisateur est déjà pris.",
+    "INVALID_SIGNUP": "Les informations d'inscription ne sont pas valides.",
+    "INVALID_LOCATION": "L'emplacement du magasin ne correspond pas à son type (un magasin en ligne a besoin d'un site web, un magasin physique d'une ville et d'une adresse).",
+    "INVALID_RETAILER": "Les informations du distributeur ne sont pas valides.",
+    "RETAILER_NOT_FOUND": "Ce distributeur n'existe plus."
   },
   "suppliers": {
     "title": "Fournisseurs",
@@ -75,6 +87,40 @@
     },
     "placeholders": {
       "country": "Choisissez un pays"
+    }
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signInTitle": "Connectez-vous à votre compte",
+    "signUp": "S'inscrire",
+    "signUpTitle": "Créer un compte fournisseur ou distributeur",
+    "createAccount": "Créer le compte",
+    "signOut": "Se déconnecter",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "accountType": "Je suis",
+    "account": "Compte",
+    "company": "Entreprise",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "welcome": "Bienvenue, {{ name }} !",
+    "demoAccounts": "Comptes de démo : admin / admin, supplier / 12345678, retailer / 12345678"
+  },
+  "retailers": {
+    "fields": {
+      "storeName": "Nom du magasin",
+      "storeType": "Type de magasin",
+      "country": "Pays",
+      "city": "Ville",
+      "address": "Adresse",
+      "website": "Site web",
+      "contactEmail": "E-mail de contact"
+    },
+    "storeTypes": {
+      "ONLINE": "En ligne",
+      "PHYSICAL": "Physique",
+      "HYBRID": "Hybride"
     }
   }
 }

@@ -11,9 +11,15 @@ export interface RetailerLocation {
 }
 
 export interface Retailer {
-  id: string;
+  id: number;
   storeName: string;
   storeType: StoreType;
   location: RetailerLocation;
   contactEmail: string;
+}
+
+/** Lightweight view used by pickers such as the "Acting as" selector. */
+export interface RetailerSummary {
+  id: number;
+  storeName: string;
 }

@@ -7,11 +7,10 @@ import com.equadis.portal.shared.domain.ErrorCode;
 
 /**
  * Who the request is acting as. {@code id} is the supplier or retailer id, and null for ADMIN.
- * Parsed from the {@code X-Acting-As} header: {@code ADMIN}, {@code SUPPLIER:12} or {@code RETAILER:3}.
+ * Read from the verified JWT (see {@link TokenClaims}); written as a persona key
+ * {@code ADMIN}, {@code SUPPLIER:12} or {@code RETAILER:3} when an administrator switches persona.
  */
 public record CurrentActor(ActorRole role, Long id) {
-
-	public static final String HEADER = "X-Acting-As";
 
 	public CurrentActor {
 		Objects.requireNonNull(role, "role");
@@ -32,25 +31,25 @@ public record CurrentActor(ActorRole role, Long id) {
 		return new CurrentActor(ActorRole.RETAILER, retailerId);
 	}
 
-	public static CurrentActor parse(String header) {
-		if (header == null || header.isBlank()) {
-			throw new BusinessException(ErrorCode.ACTING_AS_REQUIRED, "Missing " + HEADER + " header");
-		}
-		String[] parts = header.trim().split(":", -1);
-		try {
-			ActorRole role = ActorRole.valueOf(parts[0]);
-			if (role == ActorRole.ADMIN && parts.length == 1) {
-				return admin();
+	/** Parses a persona key: ADMIN, SUPPLIER:&lt;id&gt; or RETAILER:&lt;id&gt;. */
+	public static CurrentActor parse(String key) {
+		if (key != null) {
+			String[] parts = key.trim().split(":", -1);
+			try {
+				ActorRole role = ActorRole.valueOf(parts[0]);
+				if (role == ActorRole.ADMIN && parts.length == 1) {
+					return admin();
+				}
+				if (role != ActorRole.ADMIN && parts.length == 2) {
+					return new CurrentActor(role, Long.parseLong(parts[1]));
+				}
 			}
-			if (role != ActorRole.ADMIN && parts.length == 2) {
-				return new CurrentActor(role, Long.parseLong(parts[1]));
+			catch (IllegalArgumentException ignored) {
+				// Unknown role or non-numeric id: reported below.
 			}
-		}
-		catch (IllegalArgumentException ignored) {
-			// Unknown role or non-numeric id: reported below.
 		}
 		throw new BusinessException(ErrorCode.INVALID_ACTING_AS,
-				"Invalid " + HEADER + " header '" + header + "'. Expected ADMIN, SUPPLIER:<id> or RETAILER:<id>");
+				"Invalid persona '" + key + "'. Expected ADMIN, SUPPLIER:<id> or RETAILER:<id>");
 	}
 
 	public boolean isAdmin() {
@@ -59,6 +58,10 @@ public record CurrentActor(ActorRole role, Long id) {
 
 	public boolean isSupplier(long supplierId) {
 		return role == ActorRole.SUPPLIER && id == supplierId;
+	}
+
+	public boolean isRetailer(long retailerId) {
+		return role == ActorRole.RETAILER && id == retailerId;
 	}
 
 }

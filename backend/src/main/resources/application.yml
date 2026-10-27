@@ -29,6 +29,12 @@ server:
 portal:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
+  security:
+    jwt:
+      # No default on purpose: outside the dev profile the app does not start without JWT_SECRET.
+      secret: ${JWT_SECRET}
+      issuer: equadis-portal
+      ttl: 8h
 
 springdoc:
   swagger-ui:

@@ -19,27 +19,46 @@
           size="small"
         />
 
-        <label class="acting-as" for="acting-as">{{ t('header.actingAs') }}</label>
-        <p-select
-          inputId="acting-as"
-          [options]="personaGroups()"
-          [group]="true"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="personas.key()"
-          (ngModelChange)="actAs($event)"
-          [filter]="true"
-          filterBy="label"
-          [placeholder]="t('header.actingAs')"
-          appendTo="body"
-          styleClass="persona-select"
+        @if (auth.canActAs()) {
+          <label class="acting-as" for="acting-as">{{ t('header.actingAs') }}</label>
+          <p-select
+            inputId="acting-as"
+            [options]="personaGroups()"
+            [group]="true"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="personas.key()"
+            (ngModelChange)="actAs($event)"
+            [filter]="true"
+            filterBy="label"
+            [placeholder]="t('header.actingAs')"
+            appendTo="body"
+            styleClass="persona-select"
+            size="small"
+          >
+            <ng-template #selectedItem>{{ actingAsLabel() }}</ng-template>
+            <ng-template #group let-group>
+              <span class="group-label">{{ group.label }}</span>
+            </ng-template>
+          </p-select>
+        } @else {
+          <span class="acting-as">{{ actingAsLabel() }}</span>
+        }
+
+        <span class="username" [title]="t('header.signedInAs')">
+          <i class="pi pi-user" aria-hidden="true"></i>
+          {{ auth.session()?.username }}
+        </span>
+        <p-button
+          icon="pi pi-sign-out"
+          [ariaLabel]="t('auth.signOut')"
+          [title]="t('auth.signOut')"
+          severity="secondary"
           size="small"
-        >
-          <ng-template #selectedItem>{{ actingAsLabel() }}</ng-template>
-          <ng-template #group let-group>
-            <span class="group-label">{{ group.label }}</span>
-          </ng-template>
-        </p-select>
+          [text]="true"
+          styleClass="sign-out"
+          (onClick)="signOut()"
+        />
       </div>
     </ng-template>
   </p-menubar>

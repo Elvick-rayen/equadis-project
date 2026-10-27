@@ -3,6 +3,7 @@ package com.equadis.portal.supplier.infrastructure;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
@@ -45,6 +46,16 @@ public class SupplierReadModel implements SupplierQueries {
 	@Override
 	public boolean exists(long supplierId) {
 		return repository.existsById(supplierId);
+	}
+
+	@Override
+	public Optional<SupplierSummary> findSummary(long supplierId) {
+		return repository.findSummary(supplierId);
+	}
+
+	@Override
+	public Optional<SupplierSummary> findByCompanyName(String companyName) {
+		return repository.findSummaryByCompanyName(Supplier.normalizeName(companyName));
 	}
 
 	@Override

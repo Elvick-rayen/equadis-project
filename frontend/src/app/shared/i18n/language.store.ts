@@ -9,8 +9,8 @@ const STORAGE_KEY = 'equadis.language';
 /** Current UI language, kept in sync with Transloco, <html lang> and localStorage. */
 @Injectable({ providedIn: 'root' })
 export class LanguageStore {
-  private readonly transloco = inject(TranslocoService);
-  private readonly document = inject(DOCUMENT);
+  private readonly _transloco = inject(TranslocoService);
+  private readonly _document = inject(DOCUMENT);
 
   private readonly _language = signal<Language>(this.initialLanguage());
   readonly language = this._language.asReadonly();
@@ -18,8 +18,8 @@ export class LanguageStore {
   constructor() {
     effect(() => {
       const language = this._language();
-      this.transloco.setActiveLang(language);
-      this.document.documentElement.lang = language;
+      this._transloco.setActiveLang(language);
+      this._document.documentElement.lang = language;
       writeStorage(STORAGE_KEY, language);
     });
   }

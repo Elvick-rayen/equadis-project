@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, model, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, model, signal, untracked } from '@angular/core';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ButtonModule } from 'primeng/button';
@@ -6,10 +6,10 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
-import { countryOptions } from '../../../../shared/countries/countries';
-import { LanguageStore } from '../../../../shared/i18n/language.store';
-import { NotificationService } from '../../../../shared/notifications/notification.service';
-import { SupplierStore } from '../../data-access/supplier.store';
+import { countryOptions } from '@shared/countries/countries';
+import { LanguageStore } from '@shared/i18n/language.store';
+import { NotificationService } from '@shared/notifications/notification.service';
+import { SupplierService } from '../../services/supplier.service';
 import { Supplier, SupplierDraft } from '../../models/supplier.model';
 
 const PHONE_PATTERN = /^\+?[0-9 ().-]{6,20}$/;
@@ -17,13 +17,14 @@ const PHONE_PATTERN = /^\+?[0-9 ().-]{6,20}$/;
 /** Create / edit dialog. Pass `supplier` to edit, leave it null to create. */
 @Component({
   selector: 'app-supplier-form-dialog',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, TranslocoDirective, DialogModule, ButtonModule, InputTextModule, SelectModule, MessageModule],
   templateUrl: './supplier-form-dialog.html',
   styleUrl: './supplier-form-dialog.scss',
 })
 export class SupplierFormDialog {
-  private readonly store = inject(SupplierStore);
-  private readonly notifications = inject(NotificationService);
+  private readonly _supplierService = inject(SupplierService);
+  private readonly _notifications = inject(NotificationService);
   private readonly language = inject(LanguageStore).language;
 
   readonly visible = model(false);
@@ -71,18 +72,18 @@ export class SupplierFormDialog {
 
     const id = this.supplier()?.id;
     const draft = this.toDraft();
-    const request = id ? this.store.update(id, draft) : this.store.create(draft);
+    const request = id ? this._supplierService.update(id, draft) : this._supplierService.create(draft);
 
     this.saving.set(true);
     request.subscribe({
       next: (saved) => {
         this.saving.set(false);
-        this.notifications.success(id ? 'suppliers.updated' : 'suppliers.created', { name: saved.companyName });
+        this._notifications.success(id ? 'suppliers.updated' : 'suppliers.created', { name: saved.companyName });
         this.visible.set(false);
       },
       error: (error) => {
         this.saving.set(false);
-        this.notifications.error(error);
+        this._notifications.error(error);
       },
     });
   }
@@ -102,6 +103,6 @@ export class SupplierFormDialog {
 
   private uniqueNameValidator() {
     return (control: AbstractControl<string>): ValidationErrors | null =>
-      this.store.isNameTaken(control.value ?? '', this.supplier()?.id) ? { nameTaken: true } : null;
+      this._supplierService.isNameTaken(control.value ?? '', this.supplier()?.id) ? { nameTaken: true } : null;
   }
 }

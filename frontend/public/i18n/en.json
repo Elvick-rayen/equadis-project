@@ -4,7 +4,8 @@
   },
   "header": {
     "actingAs": "Acting as",
-    "language": "Language"
+    "language": "Language",
+    "signedInAs": "Signed in as"
   },
   "persona": {
     "administration": "Administration",
@@ -38,7 +39,11 @@
     "required": "This field is required.",
     "email": "Enter a valid e-mail address.",
     "phone": "Enter a valid phone number (digits, spaces, +, -, parentheses).",
-    "maxLength": "Maximum {{ max }} characters."
+    "maxLength": "Maximum {{ max }} characters.",
+    "username": "3 to 50 letters, digits, \".\", \"_\" or \"-\".",
+    "passwordLength": "8 to 72 characters.",
+    "passwordsMismatch": "The passwords do not match.",
+    "url": "Enter a full web address, e.g. https://shop.example.com."
   },
   "errors": {
     "UNKNOWN": "Something went wrong. Please try again.",
@@ -46,14 +51,21 @@
     "VALIDATION_FAILED": "Some fields are not valid.",
     "MALFORMED_REQUEST": "The request could not be read.",
     "INVALID_SORT": "This column cannot be sorted.",
-    "ACTING_AS_REQUIRED": "No persona selected.",
-    "INVALID_ACTING_AS": "The selected persona is not valid.",
+    "INVALID_ACTING_AS": "This persona is not valid.",
     "FORBIDDEN_ACTION": "This persona is not allowed to do that.",
     "INVALID_COUNTRY_CODE": "Unknown country.",
     "INVALID_CONTACT": "The contact details are not valid.",
     "INVALID_SUPPLIER": "The supplier details are not valid.",
     "SUPPLIER_NAME_TAKEN": "A supplier with this company name already exists.",
-    "SUPPLIER_NOT_FOUND": "This supplier no longer exists."
+    "SUPPLIER_NOT_FOUND": "This supplier no longer exists.",
+    "UNAUTHENTICATED": "Please sign in.",
+    "SESSION_EXPIRED": "Your session has expired. Please sign in again.",
+    "INVALID_CREDENTIALS": "Wrong username or password.",
+    "USERNAME_TAKEN": "This username is already taken.",
+    "INVALID_SIGNUP": "The sign-up details are not valid.",
+    "INVALID_LOCATION": "The store location does not match its type (online stores need a website, physical stores a city and address).",
+    "INVALID_RETAILER": "The retailer details are not valid.",
+    "RETAILER_NOT_FOUND": "This retailer no longer exists."
   },
   "suppliers": {
     "title": "Suppliers",
@@ -75,6 +87,40 @@
     },
     "placeholders": {
       "country": "Select a country"
+    }
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signInTitle": "Sign in to your account",
+    "signUp": "Sign up",
+    "signUpTitle": "Create a supplier or retailer account",
+    "createAccount": "Create account",
+    "signOut": "Sign out",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "accountType": "I am a",
+    "account": "Account",
+    "company": "Company",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "welcome": "Welcome, {{ name }}!",
+    "demoAccounts": "Demo accounts: admin / admin, supplier / 12345678, retailer / 12345678"
+  },
+  "retailers": {
+    "fields": {
+      "storeName": "Store name",
+      "storeType": "Store type",
+      "country": "Country",
+      "city": "City",
+      "address": "Address",
+      "website": "Website",
+      "contactEmail": "Contact e-mail"
+    },
+    "storeTypes": {
+      "ONLINE": "Online",
+      "PHYSICAL": "Physical",
+      "HYBRID": "Hybrid"
     }
   }
 }

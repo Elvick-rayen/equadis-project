@@ -1,0 +1,233 @@
+<ng-container *transloco="let t">
+  <main class="auth-page">
+    <p-card class="auth-card wide">
+      <ng-template #title>
+        <div class="auth-header">
+          <span class="brand">
+            <i class="pi pi-arrow-right-arrow-left" aria-hidden="true"></i>
+            {{ t('app.title') }}
+          </span>
+          <p-select
+            [options]="languageOptions"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="languages.language()"
+            (ngModelChange)="languages.setLanguage($event)"
+            [ariaLabel]="t('header.language')"
+            size="small"
+          />
+        </div>
+      </ng-template>
+      <ng-template #subtitle>{{ t('auth.signUpTitle') }}</ng-template>
+
+      <form class="form" (ngSubmit)="submit()">
+        @if (errorCode(); as code) {
+          <p-message severity="error">{{ t('errors.' + code) }}</p-message>
+        }
+
+        <div class="field">
+          <span id="account-type-label">{{ t('auth.accountType') }}</span>
+          <p-selectbutton
+            [options]="accountTypes()"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="accountType()"
+            (ngModelChange)="accountType.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            [allowEmpty]="false"
+            ariaLabelledBy="account-type-label"
+          />
+        </div>
+
+        <fieldset class="group" [formGroup]="account">
+          <legend>{{ t('auth.account') }}</legend>
+          <div class="grid">
+            <div class="field full">
+              <label for="username">{{ t('auth.username') }} *</label>
+              <input pInputText id="username" formControlName="username" autocomplete="username" />
+              @if (showError(account.controls.username)) {
+                <p-message severity="error" size="small" variant="simple">
+                  {{ t(account.controls.username.hasError('required') ? 'validation.required' : 'validation.username') }}
+                </p-message>
+              }
+            </div>
+            <div class="field">
+              <label for="password">{{ t('auth.password') }} *</label>
+              <p-password
+                inputId="password"
+                formControlName="password"
+                [feedback]="false"
+                [toggleMask]="true"
+                autocomplete="new-password"
+                fluid
+              />
+              @if (showError(account.controls.password)) {
+                <p-message severity="error" size="small" variant="simple">
+                  {{ t(account.controls.password.hasError('required') ? 'validation.required' : 'validation.passwordLength') }}
+                </p-message>
+              }
+            </div>
+            <div class="field">
+              <label for="confirmPassword">{{ t('auth.confirmPassword') }} *</label>
+              <p-password
+                inputId="confirmPassword"
+                formControlName="confirmPassword"
+                [feedback]="false"
+                [toggleMask]="true"
+                autocomplete="new-password"
+                fluid
+              />
+              @if (account.hasError('passwordsMismatch') && account.controls.confirmPassword.touched) {
+                <p-message severity="error" size="small" variant="simple">{{ t('validation.passwordsMismatch') }}</p-message>
+              }
+            </div>
+          </div>
+        </fieldset>
+
+        @if (accountType() === 'SUPPLIER') {
+          <fieldset class="group" [formGroup]="supplier">
+            <legend>{{ t('auth.company') }}</legend>
+            <div class="grid">
+              <div class="field">
+                <label for="companyName">{{ t('suppliers.fields.companyName') }} *</label>
+                <input pInputText id="companyName" formControlName="companyName" autocomplete="organization" />
+                @if (showError(supplier.controls.companyName)) {
+                  <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+                }
+              </div>
+              <div class="field">
+                <label for="supplierCountry">{{ t('suppliers.fields.country') }} *</label>
+                <p-select
+                  inputId="supplierCountry"
+                  formControlName="countryCode"
+                  [options]="countries()"
+                  optionLabel="name"
+                  optionValue="code"
+                  [filter]="true"
+                  filterBy="name,code"
+                  [placeholder]="t('suppliers.placeholders.country')"
+                  appendTo="body"
+                  fluid
+                />
+                @if (showError(supplier.controls.countryCode)) {
+                  <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+                }
+              </div>
+              <div class="field">
+                <label for="contactName">{{ t('suppliers.fields.contactName') }} *</label>
+                <input pInputText id="contactName" formControlName="contactName" autocomplete="name" />
+                @if (showError(supplier.controls.contactName)) {
+                  <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+                }
+              </div>
+              <div class="field">
+                <label for="contactPhone">{{ t('suppliers.fields.phone') }} *</label>
+                <input pInputText id="contactPhone" type="tel" formControlName="contactPhone" autocomplete="tel" placeholder="+33 1 23 45 67 89" />
+                @if (showError(supplier.controls.contactPhone)) {
+                  <p-message severity="error" size="small" variant="simple">
+                    {{ t(supplier.controls.contactPhone.hasError('required') ? 'validation.required' : 'validation.phone') }}
+                  </p-message>
+                }
+              </div>
+              <div class="field full">
+                <label for="contactEmail">{{ t('suppliers.fields.email') }} *</label>
+                <input pInputText id="contactEmail" type="email" formControlName="contactEmail" autocomplete="email" />
+                @if (showError(supplier.controls.contactEmail)) {
+                  <p-message severity="error" size="small" variant="simple">
+                    {{ t(supplier.controls.contactEmail.hasError('required') ? 'validation.required' : 'validation.email') }}
+                  </p-message>
+                }
+              </div>
+            </div>
+          </fieldset>
+        } @else {
+          <fieldset class="group" [formGroup]="retailer">
+            <legend>{{ t('auth.company') }}</legend>
+            <div class="grid">
+              <div class="field">
+                <label for="storeName">{{ t('retailers.fields.storeName') }} *</label>
+                <input pInputText id="storeName" formControlName="storeName" autocomplete="organization" />
+                @if (showError(retailer.controls.storeName)) {
+                  <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+                }
+              </div>
+              <div class="field">
+                <label for="storeType">{{ t('retailers.fields.storeType') }} *</label>
+                <p-select
+                  inputId="storeType"
+                  formControlName="storeType"
+                  [options]="storeTypes()"
+                  optionLabel="label"
+                  optionValue="value"
+                  appendTo="body"
+                  fluid
+                />
+              </div>
+              <div class="field">
+                <label for="retailerCountry">{{ t('retailers.fields.country') }} *</label>
+                <p-select
+                  inputId="retailerCountry"
+                  formControlName="countryCode"
+                  [options]="countries()"
+                  optionLabel="name"
+                  optionValue="code"
+                  [filter]="true"
+                  filterBy="name,code"
+                  [placeholder]="t('suppliers.placeholders.country')"
+                  appendTo="body"
+                  fluid
+                />
+                @if (showError(retailer.controls.countryCode)) {
+                  <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+                }
+              </div>
+              <div class="field">
+                <label for="retailerEmail">{{ t('retailers.fields.contactEmail') }} *</label>
+                <input pInputText id="retailerEmail" type="email" formControlName="contactEmail" autocomplete="email" />
+                @if (showError(retailer.controls.contactEmail)) {
+                  <p-message severity="error" size="small" variant="simple">
+                    {{ t(retailer.controls.contactEmail.hasError('required') ? 'validation.required' : 'validation.email') }}
+                  </p-message>
+                }
+              </div>
+              @if (needsAddress()) {
+                <div class="field">
+                  <label for="city">{{ t('retailers.fields.city') }} *</label>
+                  <input pInputText id="city" formControlName="city" autocomplete="address-level2" />
+                  @if (showError(retailer.controls.city)) {
+                    <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+                  }
+                </div>
+                <div class="field">
+                  <label for="address">{{ t('retailers.fields.address') }} *</label>
+                  <input pInputText id="address" formControlName="address" autocomplete="street-address" />
+                  @if (showError(retailer.controls.address)) {
+                    <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+                  }
+                </div>
+              }
+              @if (needsWebsite()) {
+                <div class="field full">
+                  <label for="website">{{ t('retailers.fields.website') }} *</label>
+                  <input pInputText id="website" type="url" formControlName="website" placeholder="https://" autocomplete="url" />
+                  @if (showError(retailer.controls.website)) {
+                    <p-message severity="error" size="small" variant="simple">
+                      {{ t(retailer.controls.website.hasError('required') ? 'validation.required' : 'validation.url') }}
+                    </p-message>
+                  }
+                </div>
+              }
+            </div>
+          </fieldset>
+        }
+
+        <p-button type="submit" [label]="t('auth.createAccount')" [loading]="submitting()" fluid />
+
+        <p class="switch-page">
+          {{ t('auth.haveAccount') }}
+          <a routerLink="/auth/login">{{ t('auth.signIn') }}</a>
+        </p>
+      </form>
+    </p-card>
+  </main>
+</ng-container>

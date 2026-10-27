@@ -1,4 +1,4 @@
-import { PersonaRole } from '../../shared/persona/persona.model';
+import { PersonaRole } from '@shared/persona/persona.model';
 
 export interface NavItem {
   /** Key under `nav.` in the translation files. */

@@ -1,3 +1,5 @@
+import { PageRequest } from '@shared/http/api';
+
 export interface SupplierContact {
   name: string;
   email: string;
@@ -23,6 +25,11 @@ export interface SupplierSummary {
 
 /** Fields the API can sort on. */
 export type SupplierSortField = 'companyName' | 'contact.name' | 'contact.email' | 'countryCode';
+
+/** Table search: page, sort and the optional search text. */
+export interface SupplierSearch extends PageRequest<SupplierSortField> {
+  query?: string;
+}
 
 export const SupplierErrorCode = {
   NameTaken: 'SUPPLIER_NAME_TAKEN',

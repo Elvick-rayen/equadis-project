@@ -2,3 +2,12 @@ spring:
   flyway:
     # Demo data so the app can be explored right away.
     locations: classpath:db/migration,classpath:db/seed
+    # Seeds are numbered V1000+, so a schema migration added later (e.g. V3) is "older" than
+    # what an existing dev database has already applied. Let Flyway apply it anyway.
+    out-of-order: true
+
+portal:
+  security:
+    jwt:
+      # Development only. Any other environment must set JWT_SECRET (32+ bytes).
+      secret: ${JWT_SECRET:dev-only-secret-change-me-0123456789abcdef}

@@ -59,9 +59,9 @@ class SupplierController {
 	}
 
 	@GetMapping("/summaries")
-	@Operation(summary = "All suppliers as id + name, for the \"Acting as\" selector and pickers",
-			description = "Open to every caller: the persona list is needed before a persona is chosen.")
-	List<SupplierSummary> summaries() {
+	@Operation(summary = "All suppliers as id + name, for the administrator's \"Acting as\" selector and pickers")
+	List<SupplierSummary> summaries(CurrentActor actor) {
+		access.requireAdmin(actor);
 		return readModel.findAllSummaries();
 	}
 

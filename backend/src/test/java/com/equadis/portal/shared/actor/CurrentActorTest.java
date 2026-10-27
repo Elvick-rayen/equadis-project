@@ -14,7 +14,7 @@ import com.equadis.portal.shared.domain.ErrorCode;
 class CurrentActorTest {
 
 	@Test
-	void parsesEachPersona() {
+	void parsesEachPersonaKey() {
 		assertThat(CurrentActor.parse("ADMIN")).isEqualTo(CurrentActor.admin());
 		assertThat(CurrentActor.parse("SUPPLIER:12")).isEqualTo(CurrentActor.supplier(12));
 		assertThat(CurrentActor.parse(" RETAILER:3 ")).isEqualTo(CurrentActor.retailer(3));
@@ -22,26 +22,19 @@ class CurrentActorTest {
 
 	@ParameterizedTest
 	@NullAndEmptySource
-	@ValueSource(strings = { "   " })
-	void missingHeaderIsReported(String header) {
-		assertThatThrownBy(() -> CurrentActor.parse(header))
-			.isInstanceOfSatisfying(BusinessException.class, ex -> assertThat(ex.code()).isEqualTo(ErrorCode.ACTING_AS_REQUIRED));
-	}
-
-	@ParameterizedTest
-	@ValueSource(strings = { "BOSS", "admin", "ADMIN:1", "SUPPLIER", "SUPPLIER:", "SUPPLIER:abc", "RETAILER:1:2" })
-	void malformedHeaderIsRejected(String header) {
-		assertThatThrownBy(() -> CurrentActor.parse(header))
+	@ValueSource(strings = { "   ", "BOSS", "admin", "ADMIN:1", "SUPPLIER", "SUPPLIER:", "SUPPLIER:abc", "RETAILER:1:2" })
+	void malformedPersonaKeyIsRejected(String key) {
+		assertThatThrownBy(() -> CurrentActor.parse(key))
 			.isInstanceOfSatisfying(BusinessException.class, ex -> assertThat(ex.code()).isEqualTo(ErrorCode.INVALID_ACTING_AS));
 	}
 
 	@Test
-	void supplierOnlyMatchesItsOwnId() {
-		CurrentActor actor = CurrentActor.supplier(12);
-
-		assertThat(actor.isSupplier(12)).isTrue();
-		assertThat(actor.isSupplier(13)).isFalse();
-		assertThat(actor.isAdmin()).isFalse();
+	void personaOnlyMatchesItsOwnCompany() {
+		CurrentActor supplier = CurrentActor.supplier(12);
+		assertThat(supplier.isSupplier(12)).isTrue();
+		assertThat(supplier.isSupplier(13)).isFalse();
+		assertThat(supplier.isRetailer(12)).isFalse();
+		assertThat(supplier.isAdmin()).isFalse();
 	}
 
 }

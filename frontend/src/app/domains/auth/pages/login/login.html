@@ -1,0 +1,64 @@
+<ng-container *transloco="let t">
+  <main class="auth-page">
+    <p-card class="auth-card">
+      <ng-template #title>
+        <div class="auth-header">
+          <span class="brand">
+            <i class="pi pi-arrow-right-arrow-left" aria-hidden="true"></i>
+            {{ t('app.title') }}
+          </span>
+          <p-select
+            [options]="languageOptions"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="languages.language()"
+            (ngModelChange)="languages.setLanguage($event)"
+            [ariaLabel]="t('header.language')"
+            size="small"
+          />
+        </div>
+      </ng-template>
+      <ng-template #subtitle>{{ t('auth.signInTitle') }}</ng-template>
+
+      <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+        @if (errorCode(); as code) {
+          <p-message severity="error">{{ t('errors.' + code) }}</p-message>
+        }
+
+        <div class="field">
+          <label for="username">{{ t('auth.username') }}</label>
+          <input pInputText id="username" formControlName="username" autocomplete="username" />
+          @if (form.controls.username.invalid && form.controls.username.touched) {
+            <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+          }
+        </div>
+
+        <div class="field">
+          <label for="password">{{ t('auth.password') }}</label>
+          <p-password
+            inputId="password"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            autocomplete="current-password"
+            fluid
+          />
+          @if (form.controls.password.invalid && form.controls.password.touched) {
+            <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+          }
+        </div>
+
+        <p-button type="submit" [label]="t('auth.signIn')" [loading]="submitting()" fluid />
+
+        <p class="switch-page">
+          {{ t('auth.noAccount') }}
+          <a routerLink="/auth/signup">{{ t('auth.signUp') }}</a>
+        </p>
+
+        @if (showDemoAccounts) {
+          <p class="demo-hint">{{ t('auth.demoAccounts') }}</p>
+        }
+      </form>
+    </p-card>
+  </main>
+</ng-container>

@@ -1,9 +1,10 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 /** Placeholder for screens that are not built yet. `titleKey` comes from the route data. */
 @Component({
   selector: 'app-coming-soon',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoPipe],
   template: `
     <h2>{{ titleKey() | transloco }}</h2>

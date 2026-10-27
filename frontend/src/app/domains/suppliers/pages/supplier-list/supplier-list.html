@@ -5,11 +5,11 @@
   </div>
 
   <p-table
-    [value]="store.suppliers()"
+    [value]="supplierService.suppliers()"
     [lazy]="true"
     (onLazyLoad)="onLazyLoad($event)"
-    [totalRecords]="store.totalRecords()"
-    [loading]="store.loading()"
+    [totalRecords]="supplierService.totalRecords()"
+    [loading]="supplierService.loading()"
     [paginator]="true"
     [first]="first()"
     [rows]="pageSize"
@@ -23,11 +23,12 @@
       <p-iconfield iconPosition="left">
         <p-inputicon styleClass="pi pi-search" />
         <input
+          #searchBox
           pInputText
           type="search"
           [placeholder]="t('common.search')"
           [attr.aria-label]="t('common.search')"
-          (input)="onSearch($any($event.target).value)"
+          (input)="onSearch(searchBox.value)"
         />
       </p-iconfield>
     </ng-template>

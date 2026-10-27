@@ -18,3 +18,11 @@ export function writeStorage(key: string, value: unknown): void {
     // Persistence is a convenience only; ignore failures.
   }
 }
+
+export function removeStorage(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Nothing to clean up if storage is unavailable.
+  }
+}
