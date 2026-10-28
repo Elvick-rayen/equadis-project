@@ -13,9 +13,12 @@ export function fromIsoDate(isoDate: string): Date {
   return new Date(year, month - 1, day);
 }
 
+/** Calendar dates follow Europe/Paris (as the backend does), whatever the browser's time zone. */
+const PARIS_DATE = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' });
+
+/** Today in Europe/Paris, so form defaults and minimum dates match what the API accepts. */
 export function today(): Date {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return fromIsoDate(PARIS_DATE.format(new Date()));
 }
 
 export function addDays(date: Date, days: number): Date {
