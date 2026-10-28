@@ -13,6 +13,7 @@ export const PERSONA_MENU: Record<PersonaRole, NavItem[]> = {
     { labelKey: 'suppliers', route: '/suppliers', icon: 'pi pi-building' },
     { labelKey: 'retailers', route: '/retailers', icon: 'pi pi-shop' },
     { labelKey: 'partnerships', route: '/partnerships', icon: 'pi pi-link' },
+    { labelKey: 'auditLog', route: '/audit-log', icon: 'pi pi-history' },
   ],
   SUPPLIER: [{ labelKey: 'myOffers', route: '/my-offers', icon: 'pi pi-tags' }],
   RETAILER: [

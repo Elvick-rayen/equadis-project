@@ -21,7 +21,8 @@
     "partnerships": "Partenariats",
     "myOffers": "Mes offres",
     "availableOffers": "Offres disponibles",
-    "mySubscriptions": "Mes abonnements"
+    "mySubscriptions": "Mes abonnements",
+    "auditLog": "Journal d'audit"
   },
   "common": {
     "new": "Nouveau",
@@ -32,8 +33,7 @@
     "search": "Rechercher",
     "actions": "Actions",
     "success": "Succès",
-    "error": "Erreur",
-    "comingSoon": "Cet écran n'est pas encore disponible."
+    "error": "Erreur"
   },
   "validation": {
     "required": "Ce champ est obligatoire.",
@@ -43,7 +43,11 @@
     "username": "3 à 50 lettres, chiffres, « . », « _ » ou « - ».",
     "passwordLength": "8 à 72 caractères.",
     "passwordsMismatch": "Les mots de passe ne correspondent pas.",
-    "url": "Saisissez une adresse web complète, par ex. https://boutique.exemple.fr."
+    "url": "Saisissez une adresse web complète, par ex. https://boutique.exemple.fr.",
+    "reference": "1 à 40 lettres, chiffres, « . », « _ » ou « - ».",
+    "percentage": "Un pourcentage doit être supérieur à 0 et au plus égal à 100.",
+    "positiveAmount": "Le montant doit être supérieur à 0.",
+    "validToBeforeFrom": "« Valable jusqu'au » doit être identique ou postérieur à « valable du »."
   },
   "errors": {
     "UNKNOWN": "Une erreur est survenue. Veuillez réessayer.",
@@ -65,7 +69,28 @@
     "INVALID_SIGNUP": "Les informations d'inscription ne sont pas valides.",
     "INVALID_LOCATION": "L'emplacement du magasin ne correspond pas à son type (un magasin en ligne a besoin d'un site web, un magasin physique d'une ville et d'une adresse).",
     "INVALID_RETAILER": "Les informations du distributeur ne sont pas valides.",
-    "RETAILER_NOT_FOUND": "Ce distributeur n'existe plus."
+    "RETAILER_NOT_FOUND": "Ce distributeur n'existe plus.",
+    "INVALID_DATE_RANGE": "La date de fin doit être postérieure à la date de début.",
+    "SUPPLIER_IN_USE": "Ce fournisseur a encore des partenariats ou des offres et ne peut pas être supprimé.",
+    "RETAILER_IN_USE": "Ce distributeur a encore des partenariats ou des abonnements et ne peut pas être supprimé.",
+    "PARTNERSHIP_NOT_FOUND": "Ce partenariat n'existe plus.",
+    "START_DATE_IN_PAST": "Un partenariat ne peut pas commencer dans le passé.",
+    "PARTNERSHIP_TOO_LONG": "Un partenariat dure au maximum 36 mois.",
+    "PARTNERSHIP_OVERLAP": "Ce fournisseur et ce distributeur ont déjà un partenariat sur cette période.",
+    "RENEWAL_NOT_ALLOWED": "Seul un partenariat actif, ou expiré depuis 30 jours au plus, peut être renouvelé.",
+    "INVALID_RENEWAL_DATE": "La nouvelle date de fin doit être postérieure à la date de fin actuelle.",
+    "TERMINATION_NOT_ALLOWED": "Seul un partenariat planifié ou actif peut être résilié.",
+    "TERMINATION_REASON_REQUIRED": "Un motif de résiliation est obligatoire.",
+    "OFFER_NOT_FOUND": "Cette offre n'existe plus.",
+    "OFFER_REFERENCE_TAKEN": "Vous avez déjà une offre avec cette référence.",
+    "INVALID_OFFER": "Les informations de l'offre ne sont pas valides.",
+    "INVALID_DISCOUNT": "La remise n'est pas valide (pourcentage : supérieur à 0 et au plus 100 ; montant fixe : positif, avec une devise).",
+    "OFFER_NOT_EDITABLE": "Seules les offres en brouillon peuvent être modifiées.",
+    "INVALID_OFFER_TRANSITION": "Cette action n'est pas possible dans le statut actuel de l'offre.",
+    "SUBSCRIPTION_NOT_FOUND": "Cet abonnement n'existe plus.",
+    "OFFER_NOT_AVAILABLE": "Cette offre ne vous est pas accessible.",
+    "ALREADY_SUBSCRIBED": "Vous êtes déjà abonné à cette offre.",
+    "SUBSCRIPTION_ALREADY_CANCELLED": "Cet abonnement est déjà annulé."
   },
   "suppliers": {
     "title": "Fournisseurs",
@@ -115,12 +140,156 @@
       "city": "Ville",
       "address": "Adresse",
       "website": "Site web",
-      "contactEmail": "E-mail de contact"
+      "contactEmail": "E-mail de contact",
+      "location": "Emplacement"
     },
     "storeTypes": {
       "ONLINE": "En ligne",
       "PHYSICAL": "Physique",
       "HYBRID": "Hybride"
+    },
+    "title": "Distributeurs",
+    "newTitle": "Nouveau distributeur",
+    "editTitle": "Modifier le distributeur",
+    "empty": "Aucun distributeur trouvé.",
+    "created": "Distributeur {{ name }} créé.",
+    "updated": "Distributeur {{ name }} modifié.",
+    "deleted": "Distributeur {{ name }} supprimé.",
+    "deleteTitle": "Supprimer le distributeur",
+    "deleteConfirm": "Supprimer {{ name }} et son compte de connexion ? Cette action est irréversible."
+  },
+  "partnerships": {
+    "title": "Partenariats",
+    "newTitle": "Nouveau partenariat",
+    "renewTitle": "Renouveler le partenariat",
+    "terminateTitle": "Résilier le partenariat",
+    "empty": "Aucun partenariat trouvé.",
+    "created": "Partenariat {{ supplier }} ↔ {{ retailer }} créé.",
+    "renewed": "Partenariat renouvelé jusqu'au {{ end }}.",
+    "terminated": "Partenariat {{ supplier }} ↔ {{ retailer }} résilié.",
+    "renew": "Renouveler",
+    "terminate": "Résilier",
+    "currentPeriod": "Période actuelle",
+    "history": "Historique des renouvellements",
+    "noRenewals": "Jamais renouvelé.",
+    "terminateWarning": "Les abonnements actifs du distributeur aux offres de ce fournisseur seront annulés.",
+    "periodHint": "Commence aujourd'hui ou plus tard, dure au maximum 36 mois.",
+    "fields": {
+      "supplier": "Fournisseur",
+      "retailer": "Distributeur",
+      "start": "Début",
+      "end": "Fin",
+      "status": "Statut",
+      "newEnd": "Nouvelle date de fin",
+      "reason": "Motif"
+    },
+    "placeholders": {
+      "supplier": "Choisissez un fournisseur",
+      "retailer": "Choisissez un distributeur"
+    },
+    "statuses": {
+      "SCHEDULED": "Planifié",
+      "ACTIVE": "Actif",
+      "EXPIRED": "Expiré",
+      "TERMINATED": "Résilié"
+    },
+    "filters": {
+      "all": "Tous",
+      "expiring": "Se termine sous 30 jours"
+    }
+  },
+  "offers": {
+    "title": "Mes offres",
+    "newTitle": "Nouvelle offre",
+    "editTitle": "Modifier l'offre",
+    "saveDraft": "Enregistrer le brouillon",
+    "empty": "Pas encore d'offres.",
+    "created": "Offre {{ reference }} enregistrée en brouillon.",
+    "updated": "Offre {{ reference }} modifiée.",
+    "published": "Offre {{ reference }} publiée.",
+    "closed": "Offre {{ reference }} clôturée.",
+    "closeTitle": "Clôturer l'offre",
+    "closeConfirm": "Clôturer {{ reference }} ? Les distributeurs abonnés seront désabonnés.",
+    "publish": "Publier",
+    "close": "Clôturer",
+    "allStatuses": "Toutes",
+    "minimumOrder": "Commande min. : {{ quantity }}",
+    "fields": {
+      "reference": "Référence",
+      "title": "Titre",
+      "description": "Description",
+      "type": "Type",
+      "value": "Valeur",
+      "currency": "Devise",
+      "minimumOrderQuantity": "Quantité minimale de commande",
+      "validFrom": "Valable du",
+      "validTo": "Valable jusqu'au",
+      "discount": "Remise",
+      "status": "Statut"
+    },
+    "statuses": {
+      "DRAFT": "Brouillon",
+      "PUBLISHED": "Publiée",
+      "CLOSED": "Clôturée"
+    },
+    "discountTypes": {
+      "PERCENTAGE_DISCOUNT": "Pourcentage",
+      "FIXED_AMOUNT_DISCOUNT": "Montant fixe"
+    }
+  },
+  "subscriptions": {
+    "availableTitle": "Offres disponibles",
+    "mineTitle": "Mes abonnements",
+    "subscribe": "S'abonner",
+    "unsubscribe": "Se désabonner",
+    "subscribed": "Abonné à {{ title }}.",
+    "unsubscribed": "Désabonné de {{ title }}.",
+    "noAvailableOffers": "Aucune offre disponible : les offres apparaissent ici lorsqu'un fournisseur avec qui vous avez un partenariat actif les publie.",
+    "empty": "Pas encore d'abonnements.",
+    "suspendedHint": "Votre partenariat avec ce fournisseur n'est pas actif.",
+    "fields": {
+      "supplier": "Fournisseur",
+      "offer": "Offre",
+      "discount": "Remise",
+      "validUntil": "Valable jusqu'au",
+      "subscribedOn": "Abonné le",
+      "state": "État"
+    },
+    "states": {
+      "ACTIVE": "Actif",
+      "SUSPENDED": "Suspendu",
+      "CANCELLED": "Annulé"
+    },
+    "causes": {
+      "RETAILER_REQUEST": "Désabonné",
+      "OFFER_CLOSED": "Offre clôturée",
+      "PARTNERSHIP_TERMINATED": "Partenariat résilié"
+    }
+  },
+  "audit": {
+    "title": "Journal d'audit",
+    "refresh": "Actualiser",
+    "empty": "Rien n'a encore été enregistré.",
+    "allSubjects": "Tous",
+    "fields": {
+      "when": "Quand",
+      "who": "Qui",
+      "action": "Action",
+      "subject": "Objet",
+      "details": "Détails"
+    },
+    "subjects": {
+      "PARTNERSHIP": "Partenariat",
+      "OFFER": "Offre"
+    },
+    "actions": {
+      "PARTNERSHIP_CREATED": "Partenariat créé",
+      "PARTNERSHIP_RENEWED": "Partenariat renouvelé",
+      "PARTNERSHIP_TERMINATED": "Partenariat résilié",
+      "OFFER_CREATED": "Offre créée",
+      "OFFER_EDITED": "Offre modifiée",
+      "OFFER_PUBLISHED": "Offre publiée",
+      "OFFER_CLOSED": "Offre clôturée"
     }
   }
 }

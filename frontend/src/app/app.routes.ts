@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@shared/auth/auth.guard';
 import { personaGuard, redirectToPersonaHome } from '@shared/persona/persona.guard';
-import { ComingSoon } from '@shared/ui/coming-soon/coming-soon';
 import { Shell } from '@shell/layout/shell';
 
 export const routes: Routes = [
@@ -23,15 +22,40 @@ export const routes: Routes = [
         canActivate: [personaGuard('ADMIN')],
         loadChildren: () => import('@domains/suppliers/suppliers.routes').then((m) => m.SUPPLIER_ROUTES),
       },
-      { path: 'retailers', canActivate: [personaGuard('ADMIN')], component: ComingSoon, data: { titleKey: 'nav.retailers' } },
-      { path: 'partnerships', canActivate: [personaGuard('ADMIN')], component: ComingSoon, data: { titleKey: 'nav.partnerships' } },
+      {
+        path: 'retailers',
+        canActivate: [personaGuard('ADMIN')],
+        loadChildren: () => import('@domains/retailers/retailers.routes').then((m) => m.RETAILER_ROUTES),
+      },
+      {
+        path: 'partnerships',
+        canActivate: [personaGuard('ADMIN')],
+        loadChildren: () => import('@domains/partnerships/partnerships.routes').then((m) => m.PARTNERSHIP_ROUTES),
+      },
+      {
+        path: 'audit-log',
+        canActivate: [personaGuard('ADMIN')],
+        loadChildren: () => import('@domains/audit/audit.routes').then((m) => m.AUDIT_ROUTES),
+      },
 
       // Supplier
-      { path: 'my-offers', canActivate: [personaGuard('SUPPLIER')], component: ComingSoon, data: { titleKey: 'nav.myOffers' } },
+      {
+        path: 'my-offers',
+        canActivate: [personaGuard('SUPPLIER')],
+        loadChildren: () => import('@domains/offers/offers.routes').then((m) => m.OFFER_ROUTES),
+      },
 
       // Retailer
-      { path: 'offers', canActivate: [personaGuard('RETAILER')], component: ComingSoon, data: { titleKey: 'nav.availableOffers' } },
-      { path: 'subscriptions', canActivate: [personaGuard('RETAILER')], component: ComingSoon, data: { titleKey: 'nav.mySubscriptions' } },
+      {
+        path: 'offers',
+        canActivate: [personaGuard('RETAILER')],
+        loadChildren: () => import('@domains/subscriptions/subscriptions.routes').then((m) => m.AVAILABLE_OFFER_ROUTES),
+      },
+      {
+        path: 'subscriptions',
+        canActivate: [personaGuard('RETAILER')],
+        loadChildren: () => import('@domains/subscriptions/subscriptions.routes').then((m) => m.SUBSCRIPTION_ROUTES),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

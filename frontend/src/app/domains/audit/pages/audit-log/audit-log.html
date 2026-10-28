@@ -1,0 +1,61 @@
+<ng-container *transloco="let t">
+  <div class="page-header">
+    <h1>{{ t('audit.title') }}</h1>
+    <p-button icon="pi pi-refresh" [label]="t('audit.refresh')" severity="secondary" [outlined]="true" (onClick)="auditService.reload()" />
+  </div>
+
+  <p-table
+    [value]="auditService.entries()"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [totalRecords]="auditService.totalRecords()"
+    [loading]="auditService.loading()"
+    [paginator]="true"
+    [first]="first()"
+    [rows]="pageSize"
+    [rowsPerPageOptions]="[20, 50, 100]"
+    dataKey="id"
+    stripedRows
+  >
+    <ng-template #caption>
+      <div class="table-toolbar">
+        <label for="subjectFilter">{{ t('audit.fields.subject') }}:</label>
+        <p-select
+          inputId="subjectFilter"
+          [options]="subjectOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="subjectType()"
+          (ngModelChange)="onSubjectChange($event)"
+          size="small"
+        />
+      </div>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th>{{ t('audit.fields.when') }}</th>
+        <th>{{ t('audit.fields.who') }}</th>
+        <th>{{ t('audit.fields.action') }}</th>
+        <th>{{ t('audit.fields.subject') }}</th>
+        <th>{{ t('audit.fields.details') }}</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-entry>
+      <tr>
+        <td>{{ entry.occurredAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+        <td>{{ entry.actor }}</td>
+        <td><p-tag [value]="t('audit.actions.' + entry.action)" severity="secondary" /></td>
+        <td>{{ t('audit.subjects.' + entry.subjectType) }} #{{ entry.subjectId }}</td>
+        <td>{{ entry.details }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="5">{{ t('audit.empty') }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-container>

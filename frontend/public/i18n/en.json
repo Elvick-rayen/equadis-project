@@ -21,7 +21,8 @@
     "partnerships": "Partnerships",
     "myOffers": "My offers",
     "availableOffers": "Available offers",
-    "mySubscriptions": "My subscriptions"
+    "mySubscriptions": "My subscriptions",
+    "auditLog": "Audit log"
   },
   "common": {
     "new": "New",
@@ -32,8 +33,7 @@
     "search": "Search",
     "actions": "Actions",
     "success": "Success",
-    "error": "Error",
-    "comingSoon": "This screen is not built yet."
+    "error": "Error"
   },
   "validation": {
     "required": "This field is required.",
@@ -43,7 +43,11 @@
     "username": "3 to 50 letters, digits, \".\", \"_\" or \"-\".",
     "passwordLength": "8 to 72 characters.",
     "passwordsMismatch": "The passwords do not match.",
-    "url": "Enter a full web address, e.g. https://shop.example.com."
+    "url": "Enter a full web address, e.g. https://shop.example.com.",
+    "reference": "1 to 40 letters, digits, \".\", \"_\" or \"-\".",
+    "percentage": "A percentage must be more than 0 and at most 100.",
+    "positiveAmount": "The amount must be more than 0.",
+    "validToBeforeFrom": "\"Valid to\" must be on or after \"valid from\"."
   },
   "errors": {
     "UNKNOWN": "Something went wrong. Please try again.",
@@ -65,7 +69,28 @@
     "INVALID_SIGNUP": "The sign-up details are not valid.",
     "INVALID_LOCATION": "The store location does not match its type (online stores need a website, physical stores a city and address).",
     "INVALID_RETAILER": "The retailer details are not valid.",
-    "RETAILER_NOT_FOUND": "This retailer no longer exists."
+    "RETAILER_NOT_FOUND": "This retailer no longer exists.",
+    "INVALID_DATE_RANGE": "The end date must be after the start date.",
+    "SUPPLIER_IN_USE": "This supplier still has partnerships or offers and cannot be deleted.",
+    "RETAILER_IN_USE": "This retailer still has partnerships or subscriptions and cannot be deleted.",
+    "PARTNERSHIP_NOT_FOUND": "This partnership no longer exists.",
+    "START_DATE_IN_PAST": "A partnership cannot start in the past.",
+    "PARTNERSHIP_TOO_LONG": "A partnership lasts at most 36 months.",
+    "PARTNERSHIP_OVERLAP": "This supplier and retailer already have a partnership in that period.",
+    "RENEWAL_NOT_ALLOWED": "Only an active partnership, or one expired for at most 30 days, can be renewed.",
+    "INVALID_RENEWAL_DATE": "The new end date must be after the current end date.",
+    "TERMINATION_NOT_ALLOWED": "Only a scheduled or active partnership can be terminated.",
+    "TERMINATION_REASON_REQUIRED": "A termination reason is required.",
+    "OFFER_NOT_FOUND": "This offer no longer exists.",
+    "OFFER_REFERENCE_TAKEN": "You already have an offer with this reference.",
+    "INVALID_OFFER": "The offer details are not valid.",
+    "INVALID_DISCOUNT": "The discount is not valid (percentage: more than 0 and at most 100; fixed amount: positive, with a currency).",
+    "OFFER_NOT_EDITABLE": "Only draft offers can be edited.",
+    "INVALID_OFFER_TRANSITION": "This action is not possible in the offer's current status.",
+    "SUBSCRIPTION_NOT_FOUND": "This subscription no longer exists.",
+    "OFFER_NOT_AVAILABLE": "This offer is not available to you.",
+    "ALREADY_SUBSCRIBED": "You are already subscribed to this offer.",
+    "SUBSCRIPTION_ALREADY_CANCELLED": "This subscription is already cancelled."
   },
   "suppliers": {
     "title": "Suppliers",
@@ -115,12 +140,156 @@
       "city": "City",
       "address": "Address",
       "website": "Website",
-      "contactEmail": "Contact e-mail"
+      "contactEmail": "Contact e-mail",
+      "location": "Location"
     },
     "storeTypes": {
       "ONLINE": "Online",
       "PHYSICAL": "Physical",
       "HYBRID": "Hybrid"
+    },
+    "title": "Retailers",
+    "newTitle": "New retailer",
+    "editTitle": "Edit retailer",
+    "empty": "No retailers found.",
+    "created": "Retailer {{ name }} created.",
+    "updated": "Retailer {{ name }} updated.",
+    "deleted": "Retailer {{ name }} deleted.",
+    "deleteTitle": "Delete retailer",
+    "deleteConfirm": "Delete {{ name }} and its login account? This cannot be undone."
+  },
+  "partnerships": {
+    "title": "Partnerships",
+    "newTitle": "New partnership",
+    "renewTitle": "Renew partnership",
+    "terminateTitle": "Terminate partnership",
+    "empty": "No partnerships found.",
+    "created": "Partnership {{ supplier }} ↔ {{ retailer }} created.",
+    "renewed": "Partnership renewed until {{ end }}.",
+    "terminated": "Partnership {{ supplier }} ↔ {{ retailer }} terminated.",
+    "renew": "Renew",
+    "terminate": "Terminate",
+    "currentPeriod": "Current period",
+    "history": "Renewal history",
+    "noRenewals": "Never renewed.",
+    "terminateWarning": "The retailer's active subscriptions to this supplier's offers will be cancelled.",
+    "periodHint": "Starts today or later, lasts at most 36 months.",
+    "fields": {
+      "supplier": "Supplier",
+      "retailer": "Retailer",
+      "start": "Start",
+      "end": "End",
+      "status": "Status",
+      "newEnd": "New end date",
+      "reason": "Reason"
+    },
+    "placeholders": {
+      "supplier": "Select a supplier",
+      "retailer": "Select a retailer"
+    },
+    "statuses": {
+      "SCHEDULED": "Scheduled",
+      "ACTIVE": "Active",
+      "EXPIRED": "Expired",
+      "TERMINATED": "Terminated"
+    },
+    "filters": {
+      "all": "All",
+      "expiring": "Ending within 30 days"
+    }
+  },
+  "offers": {
+    "title": "My offers",
+    "newTitle": "New offer",
+    "editTitle": "Edit offer",
+    "saveDraft": "Save draft",
+    "empty": "No offers yet.",
+    "created": "Offer {{ reference }} saved as draft.",
+    "updated": "Offer {{ reference }} updated.",
+    "published": "Offer {{ reference }} published.",
+    "closed": "Offer {{ reference }} closed.",
+    "closeTitle": "Close offer",
+    "closeConfirm": "Close {{ reference }}? Retailers subscribed to it will be unsubscribed.",
+    "publish": "Publish",
+    "close": "Close",
+    "allStatuses": "All",
+    "minimumOrder": "Min. order: {{ quantity }}",
+    "fields": {
+      "reference": "Reference",
+      "title": "Title",
+      "description": "Description",
+      "type": "Type",
+      "value": "Value",
+      "currency": "Currency",
+      "minimumOrderQuantity": "Minimum order quantity",
+      "validFrom": "Valid from",
+      "validTo": "Valid to",
+      "discount": "Discount",
+      "status": "Status"
+    },
+    "statuses": {
+      "DRAFT": "Draft",
+      "PUBLISHED": "Published",
+      "CLOSED": "Closed"
+    },
+    "discountTypes": {
+      "PERCENTAGE_DISCOUNT": "Percentage",
+      "FIXED_AMOUNT_DISCOUNT": "Fixed amount"
+    }
+  },
+  "subscriptions": {
+    "availableTitle": "Available offers",
+    "mineTitle": "My subscriptions",
+    "subscribe": "Subscribe",
+    "unsubscribe": "Unsubscribe",
+    "subscribed": "Subscribed to {{ title }}.",
+    "unsubscribed": "Unsubscribed from {{ title }}.",
+    "noAvailableOffers": "No offers available: offers appear here when they are published by a supplier you have an active partnership with.",
+    "empty": "No subscriptions yet.",
+    "suspendedHint": "Your partnership with this supplier is not active.",
+    "fields": {
+      "supplier": "Supplier",
+      "offer": "Offer",
+      "discount": "Discount",
+      "validUntil": "Valid until",
+      "subscribedOn": "Subscribed on",
+      "state": "State"
+    },
+    "states": {
+      "ACTIVE": "Active",
+      "SUSPENDED": "Suspended",
+      "CANCELLED": "Cancelled"
+    },
+    "causes": {
+      "RETAILER_REQUEST": "Unsubscribed",
+      "OFFER_CLOSED": "Offer closed",
+      "PARTNERSHIP_TERMINATED": "Partnership terminated"
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "refresh": "Refresh",
+    "empty": "Nothing recorded yet.",
+    "allSubjects": "All",
+    "fields": {
+      "when": "When",
+      "who": "Who",
+      "action": "Action",
+      "subject": "Subject",
+      "details": "Details"
+    },
+    "subjects": {
+      "PARTNERSHIP": "Partnership",
+      "OFFER": "Offer"
+    },
+    "actions": {
+      "PARTNERSHIP_CREATED": "Partnership created",
+      "PARTNERSHIP_RENEWED": "Partnership renewed",
+      "PARTNERSHIP_TERMINATED": "Partnership terminated",
+      "OFFER_CREATED": "Offer created",
+      "OFFER_EDITED": "Offer edited",
+      "OFFER_PUBLISHED": "Offer published",
+      "OFFER_CLOSED": "Offer closed"
     }
   }
 }
