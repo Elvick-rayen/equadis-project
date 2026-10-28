@@ -22,6 +22,10 @@ spring:
     web:
       pageable:
         max-page-size: 100
+  modulith:
+    # Modules are the packages annotated with @ApplicationModule (see their package-info.java):
+    # the shared kernel and each business module under com.equadis.portal.modules.
+    detection-strategy: explicitly-annotated
 
 server:
   port: 8080

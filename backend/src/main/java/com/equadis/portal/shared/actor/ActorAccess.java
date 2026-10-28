@@ -22,6 +22,13 @@ public class ActorAccess {
 		}
 	}
 
+	/** The administrator, or the retailer itself. */
+	public void requireAdminOrRetailer(CurrentActor actor, long retailerId) {
+		if (!actor.isAdmin() && !actor.isRetailer(retailerId)) {
+			throw forbidden(actor);
+		}
+	}
+
 	private static BusinessException forbidden(CurrentActor actor) {
 		return new BusinessException(ErrorCode.FORBIDDEN_ACTION, "Not allowed when acting as " + actor.role());
 	}

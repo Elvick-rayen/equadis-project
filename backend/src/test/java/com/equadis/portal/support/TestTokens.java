@@ -4,7 +4,7 @@ import org.springframework.boot.test.context.TestComponent;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import com.equadis.portal.auth.application.TokenService;
+import com.equadis.portal.modules.auth.application.TokenService;
 import com.equadis.portal.shared.actor.CurrentActor;
 
 /** Signs real JWTs for a persona, so web tests go through the same security as the app. */
