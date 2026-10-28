@@ -25,4 +25,10 @@ public class TestTokens {
 		return request.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenFor(actor));
 	}
 
+	/** An administrator account currently acting as another persona (can_act_as stays true). */
+	public MockHttpServletRequestBuilder asAdminActingAs(CurrentActor actor, MockHttpServletRequestBuilder request) {
+		String token = tokens.issue("test-admin", actor, null, true).token();
+		return request.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+	}
+
 }

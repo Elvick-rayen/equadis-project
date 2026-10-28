@@ -131,6 +131,18 @@ class SupplierControllerIT {
 	}
 
 	@Test
+	void anAdministratorActingAsASupplierStillGetsTheActingAsLists() throws Exception {
+		// The "Acting as" selector needs every company, also while the admin acts as someone else.
+		mvc.perform(tokens.asAdminActingAs(CurrentActor.supplier(1), get("/api/suppliers/summaries")))
+			.andExpect(status().isOk());
+		mvc.perform(tokens.asAdminActingAs(CurrentActor.retailer(1), get("/api/retailers/summaries")))
+			.andExpect(status().isOk());
+		// ...but the acted-as persona's rules still apply to everything else.
+		mvc.perform(tokens.asAdminActingAs(CurrentActor.supplier(1), get("/api/suppliers")))
+			.andExpect(status().isForbidden());
+	}
+
+	@Test
 	void aValidTokenIsRequired() throws Exception {
 		mvc.perform(get("/api/suppliers"))
 			.andExpect(status().isUnauthorized())

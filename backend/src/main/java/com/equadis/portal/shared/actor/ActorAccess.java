@@ -1,5 +1,6 @@
 package com.equadis.portal.shared.actor;
 
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import com.equadis.portal.shared.domain.BusinessException;
@@ -12,6 +13,16 @@ public class ActorAccess {
 	public void requireAdmin(CurrentActor actor) {
 		if (!actor.isAdmin()) {
 			throw forbidden(actor);
+		}
+	}
+
+	/**
+	 * An administrator account, whichever persona it currently acts as. For the lists the
+	 * "Acting as" selector needs, so an administrator acting as a supplier can switch again.
+	 */
+	public void requireAdministratorAccount(Jwt token) {
+		if (!TokenClaims.canActAs(token)) {
+			throw new BusinessException(ErrorCode.FORBIDDEN_ACTION, "Only administrator accounts can list every company");
 		}
 	}
 

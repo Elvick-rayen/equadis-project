@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,8 +62,8 @@ class RetailerController {
 
 	@GetMapping("/summaries")
 	@Operation(summary = "All retailers as id + name, for the administrator's \"Acting as\" selector")
-	List<RetailerSummary> summaries(CurrentActor actor) {
-		access.requireAdmin(actor);
+	List<RetailerSummary> summaries(@AuthenticationPrincipal Jwt token) {
+		access.requireAdministratorAccount(token);
 		return readModel.findAllSummaries();
 	}
 
