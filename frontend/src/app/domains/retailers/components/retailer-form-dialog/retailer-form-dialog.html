@@ -1,0 +1,103 @@
+<ng-container *transloco="let t">
+  <p-dialog
+    [header]="t(isEdit() ? 'retailers.editTitle' : 'retailers.newTitle')"
+    [visible]="visible()"
+    (visibleChange)="visible.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [style]="{ width: '36rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+  >
+    <form class="form" [formGroup]="form" (ngSubmit)="save()">
+      <!-- Lets Enter submit the form; the visible Save button is in the dialog footer. -->
+      <button type="submit" hidden></button>
+
+      <div class="field">
+        <label for="storeName">{{ t('retailers.fields.storeName') }} *</label>
+        <input pInputText id="storeName" formControlName="storeName" autocomplete="organization" />
+        @if (showError(form.controls.storeName)) {
+          <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+        }
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="storeType">{{ t('retailers.fields.storeType') }} *</label>
+          <p-select
+            inputId="storeType"
+            formControlName="storeType"
+            [options]="storeTypes()"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+            fluid
+          />
+        </div>
+        <div class="field">
+          <label for="countryCode">{{ t('retailers.fields.country') }} *</label>
+          <p-select
+            inputId="countryCode"
+            formControlName="countryCode"
+            [options]="countries()"
+            optionLabel="name"
+            optionValue="code"
+            [filter]="true"
+            filterBy="name,code"
+            [placeholder]="t('suppliers.placeholders.country')"
+            appendTo="body"
+            fluid
+          />
+          @if (showError(form.controls.countryCode)) {
+            <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+          }
+        </div>
+      </div>
+
+      @if (needsAddress()) {
+        <div class="field-row">
+          <div class="field">
+            <label for="city">{{ t('retailers.fields.city') }} *</label>
+            <input pInputText id="city" formControlName="city" autocomplete="address-level2" />
+            @if (showError(form.controls.city)) {
+              <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+            }
+          </div>
+          <div class="field">
+            <label for="address">{{ t('retailers.fields.address') }} *</label>
+            <input pInputText id="address" formControlName="address" autocomplete="street-address" />
+            @if (showError(form.controls.address)) {
+              <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+            }
+          </div>
+        </div>
+      }
+
+      @if (needsWebsite()) {
+        <div class="field">
+          <label for="website">{{ t('retailers.fields.website') }} *</label>
+          <input pInputText id="website" type="url" formControlName="website" placeholder="https://" autocomplete="url" />
+          @if (showError(form.controls.website)) {
+            <p-message severity="error" size="small" variant="simple">
+              {{ t(form.controls.website.hasError('required') ? 'validation.required' : 'validation.url') }}
+            </p-message>
+          }
+        </div>
+      }
+
+      <div class="field">
+        <label for="contactEmail">{{ t('retailers.fields.contactEmail') }} *</label>
+        <input pInputText id="contactEmail" type="email" formControlName="contactEmail" autocomplete="email" />
+        @if (showError(form.controls.contactEmail)) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ t(form.controls.contactEmail.hasError('required') ? 'validation.required' : 'validation.email') }}
+          </p-message>
+        }
+      </div>
+    </form>
+
+    <ng-template #footer>
+      <p-button [label]="t('common.cancel')" severity="secondary" [text]="true" (onClick)="visible.set(false)" />
+      <p-button [label]="t('common.save')" [loading]="saving()" (onClick)="save()" />
+    </ng-template>
+  </p-dialog>
+</ng-container>

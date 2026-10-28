@@ -1,0 +1,90 @@
+<ng-container *transloco="let t">
+  <div class="page-header">
+    <h1>{{ t('retailers.title') }}</h1>
+    <p-button icon="pi pi-plus" [label]="t('common.new')" (onClick)="openNew()" />
+  </div>
+
+  <p-table
+    [value]="retailerService.retailers()"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [totalRecords]="retailerService.totalRecords()"
+    [loading]="retailerService.loading()"
+    [paginator]="true"
+    [first]="first()"
+    [rows]="pageSize"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    sortField="storeName"
+    [sortOrder]="1"
+    dataKey="id"
+    stripedRows
+  >
+    <ng-template #caption>
+      <p-iconfield iconPosition="left">
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          #searchBox
+          pInputText
+          type="search"
+          [placeholder]="t('common.search')"
+          [attr.aria-label]="t('common.search')"
+          (input)="onSearch(searchBox.value)"
+        />
+      </p-iconfield>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="storeName">{{ t('retailers.fields.storeName') }} <p-sortIcon field="storeName" /></th>
+        <th pSortableColumn="storeType">{{ t('retailers.fields.storeType') }} <p-sortIcon field="storeType" /></th>
+        <th pSortableColumn="location.city">{{ t('retailers.fields.location') }} <p-sortIcon field="location.city" /></th>
+        <th pSortableColumn="location.countryCode">{{ t('retailers.fields.country') }} <p-sortIcon field="location.countryCode" /></th>
+        <th pSortableColumn="contactEmail">{{ t('retailers.fields.contactEmail') }} <p-sortIcon field="contactEmail" /></th>
+        <th><span class="sr-only">{{ t('common.actions') }}</span></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-retailer>
+      <tr>
+        <td>{{ retailer.storeName }}</td>
+        <td><p-tag [value]="t('retailers.storeTypes.' + retailer.storeType)" severity="secondary" /></td>
+        <td>
+          @if (retailer.location.city) {
+            <div>{{ retailer.location.address }}, {{ retailer.location.city }}</div>
+          }
+          @if (retailer.location.website) {
+            <div class="muted">{{ retailer.location.website }}</div>
+          }
+        </td>
+        <td>{{ retailer.location.countryCode | countryName: language() }} ({{ retailer.location.countryCode }})</td>
+        <td>{{ retailer.contactEmail }}</td>
+        <td class="row-actions">
+          <p-button
+            icon="pi pi-pencil"
+            [label]="t('common.edit')"
+            severity="secondary"
+            size="small"
+            [text]="true"
+            (onClick)="openEdit(retailer)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            [label]="t('common.delete')"
+            severity="danger"
+            size="small"
+            [text]="true"
+            (onClick)="confirmDelete(retailer)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6">{{ t('retailers.empty') }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-retailer-form-dialog [(visible)]="dialogOpen" [retailer]="editing()" />
+</ng-container>
