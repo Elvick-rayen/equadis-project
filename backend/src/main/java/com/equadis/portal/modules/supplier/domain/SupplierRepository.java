@@ -12,6 +12,9 @@ public interface SupplierRepository {
 
 	void delete(Supplier supplier);
 
+	/** Sends pending changes to the database now, so constraint violations surface in the caller. */
+	void flush();
+
 	boolean existsByCompanyNameIgnoreCase(String companyName);
 
 	boolean existsByCompanyNameIgnoreCaseAndIdNot(String companyName, Long id);

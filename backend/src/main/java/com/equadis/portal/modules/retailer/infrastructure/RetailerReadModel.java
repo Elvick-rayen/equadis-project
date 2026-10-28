@@ -1,5 +1,6 @@
 package com.equadis.portal.modules.retailer.infrastructure;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -47,8 +48,18 @@ public class RetailerReadModel implements RetailerQueries {
 	}
 
 	@Override
+	public boolean exists(long retailerId) {
+		return repository.existsById(retailerId);
+	}
+
+	@Override
 	public Optional<RetailerSummary> findSummary(long retailerId) {
 		return repository.findSummary(retailerId);
+	}
+
+	@Override
+	public List<RetailerSummary> findSummaries(Collection<Long> retailerIds) {
+		return retailerIds.isEmpty() ? List.of() : repository.findSummaries(retailerIds);
 	}
 
 	@Override

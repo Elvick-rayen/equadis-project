@@ -53,8 +53,20 @@ public class SupplierService implements SupplierRegistration {
 		return saveUnique(supplier, name);
 	}
 
+	/**
+	 * Only possible while the supplier has no partnerships or offers: the database refuses
+	 * otherwise (no cascading foreign keys), and that becomes SUPPLIER_IN_USE.
+	 */
 	public void delete(long supplierId) {
-		suppliers.delete(get(supplierId));
+		Supplier supplier = get(supplierId);
+		try {
+			suppliers.delete(supplier);
+			suppliers.flush();
+		}
+		catch (DataIntegrityViolationException ex) {
+			throw new BusinessException(ErrorCode.SUPPLIER_IN_USE,
+					"Supplier " + supplierId + " still has partnerships or offers and cannot be deleted");
+		}
 	}
 
 	@Transactional(readOnly = true)

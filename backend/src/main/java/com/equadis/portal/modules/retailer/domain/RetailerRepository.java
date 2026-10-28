@@ -11,4 +11,7 @@ public interface RetailerRepository {
 	Optional<Retailer> findById(Long id);
 
 	void delete(Retailer retailer);
+
+	/** Sends pending changes to the database now, so constraint violations surface in the caller. */
+	void flush();
 }

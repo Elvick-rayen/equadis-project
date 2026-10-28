@@ -1,5 +1,6 @@
 package com.equadis.portal.modules.retailer.application;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,9 +55,21 @@ public class RetailerService implements RetailerRegistration {
 		return retailers.saveAndFlush(retailer);
 	}
 
-	/** Also deletes the retailer's login account (app_user.retailer_id is ON DELETE CASCADE). */
+	/**
+	 * Also deletes the retailer's login account (app_user.retailer_id is ON DELETE CASCADE).
+	 * Only possible while the retailer has no partnerships or subscriptions: the database refuses
+	 * otherwise, and that becomes RETAILER_IN_USE.
+	 */
 	public void delete(long retailerId) {
-		retailers.delete(get(retailerId));
+		Retailer retailer = get(retailerId);
+		try {
+			retailers.delete(retailer);
+			retailers.flush();
+		}
+		catch (DataIntegrityViolationException ex) {
+			throw new BusinessException(ErrorCode.RETAILER_IN_USE,
+					"Retailer " + retailerId + " still has partnerships or subscriptions and cannot be deleted");
+		}
 	}
 
 }

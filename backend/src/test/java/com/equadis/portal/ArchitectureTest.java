@@ -182,7 +182,13 @@ class ArchitectureTest {
 	private static DescribedPredicate<JavaClass> areRepositoriesOrNonReadModelInfrastructure() {
 		return DescribedPredicate.describe("are repositories, or infrastructure classes other than *ReadModel",
 				type -> type.getSimpleName().endsWith("Repository")
-						|| type.getPackageName().contains(".infrastructure") && !type.getSimpleName().endsWith("ReadModel"));
+						|| type.getPackageName().contains(".infrastructure") && !isReadModel(type));
+	}
+
+	/** A *ReadModel class, or a result record nested inside one (e.g. PartnershipReadModel.PartyNames). */
+	private static boolean isReadModel(JavaClass type) {
+		return type.getSimpleName().endsWith("ReadModel")
+				|| type.getEnclosingClass().map(outer -> outer.getSimpleName().endsWith("ReadModel")).orElse(false);
 	}
 
 	private static ArchCondition<JavaClass> beRecords() {

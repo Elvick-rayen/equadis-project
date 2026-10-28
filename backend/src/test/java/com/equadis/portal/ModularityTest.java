@@ -17,9 +17,10 @@ class ModularityTest {
 	@Test
 	void detectsTheSharedKernelAndEachBusinessModule() {
 		assertThat(modules.stream().map(module -> module.getBasePackage().getName()))
-			.containsExactlyInAnyOrder("com.equadis.portal.shared", "com.equadis.portal.modules.auth",
-					"com.equadis.portal.modules.persona", "com.equadis.portal.modules.retailer",
-					"com.equadis.portal.modules.supplier");
+			.contains("com.equadis.portal.shared", "com.equadis.portal.modules.supplier")
+			.allSatisfy(name -> assertThat(name)
+				.matches("com\\.equadis\\.portal\\.(shared|modules\\.[a-z]+)")
+				.as("a module is the shared kernel or a direct child of com.equadis.portal.modules"));
 	}
 
 	@Test

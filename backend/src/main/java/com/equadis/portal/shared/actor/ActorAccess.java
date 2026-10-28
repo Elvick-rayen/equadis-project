@@ -29,6 +29,13 @@ public class ActorAccess {
 		}
 	}
 
+	/** The administrator, or either company of a partnership-like pair. */
+	public void requireAdminOrParty(CurrentActor actor, long supplierId, long retailerId) {
+		if (!actor.isAdmin() && !actor.isSupplier(supplierId) && !actor.isRetailer(retailerId)) {
+			throw forbidden(actor);
+		}
+	}
+
 	private static BusinessException forbidden(CurrentActor actor) {
 		return new BusinessException(ErrorCode.FORBIDDEN_ACTION, "Not allowed when acting as " + actor.role());
 	}

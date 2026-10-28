@@ -1,5 +1,6 @@
 package com.equadis.portal.modules.retailer.infrastructure;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ interface SpringDataRetailerRepository extends JpaRepository<Retailer, Long>, Re
 
 	@Query("select new com.equadis.portal.modules.retailer.RetailerSummary(r.id, r.storeName) from Retailer r where r.id = :id")
 	Optional<RetailerSummary> findSummary(@Param("id") long id);
+
+	@Query("select new com.equadis.portal.modules.retailer.RetailerSummary(r.id, r.storeName) from Retailer r where r.id in :ids order by lower(r.storeName)")
+	List<RetailerSummary> findSummaries(@Param("ids") Collection<Long> ids);
 
 	@Query("select new com.equadis.portal.modules.retailer.RetailerSummary(r.id, r.storeName) from Retailer r where lower(r.storeName) = lower(:name)")
 	List<RetailerSummary> findByStoreNameIgnoreCase(@Param("name") String name);
