@@ -17,5 +17,29 @@ services:
       timeout: 3s
       retries: 10
 
+  # The whole app: `docker compose up -d --build`, then open http://localhost:8081.
+  # For local development start only the database: `docker compose up -d postgres`.
+  backend:
+    build: ./backend
+    container_name: equadis-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # "dev" loads the demo data and the demo accounts.
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL: jdbc:postgresql://postgres:5432/equadis_portal
+      DB_USER: portal
+      DB_PASSWORD: portal
+      JWT_SECRET: ${JWT_SECRET:-docker-demo-secret-change-me-0123456789abcdef}
+
+  frontend:
+    build: ./frontend
+    container_name: equadis-frontend
+    depends_on:
+      - backend
+    ports:
+      - "8081:80"
+
 volumes:
   postgres-data:
