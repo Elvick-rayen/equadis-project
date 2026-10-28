@@ -1,8 +1,10 @@
 import { DOCUMENT } from '@angular/common';
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
+import { PrimeNG } from 'primeng/config';
 import { readStorage, writeStorage } from '../storage/local-storage';
 import { DEFAULT_LANGUAGE, isLanguage, Language } from './languages';
+import { PRIMENG_LOCALES } from './primeng-locales';
 
 const STORAGE_KEY = 'equadis.language';
 
@@ -11,6 +13,7 @@ const STORAGE_KEY = 'equadis.language';
 export class LanguageStore {
   private readonly _transloco = inject(TranslocoService);
   private readonly _document = inject(DOCUMENT);
+  private readonly _primeng = inject(PrimeNG);
 
   private readonly _language = signal<Language>(this.initialLanguage());
   readonly language = this._language.asReadonly();
@@ -19,6 +22,7 @@ export class LanguageStore {
     effect(() => {
       const language = this._language();
       this._transloco.setActiveLang(language);
+      this._primeng.setTranslation(PRIMENG_LOCALES[language]);
       this._document.documentElement.lang = language;
       writeStorage(STORAGE_KEY, language);
     });
