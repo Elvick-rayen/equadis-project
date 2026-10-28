@@ -2,3 +2,6 @@ portal:
   security:
     jwt:
       secret: test-only-secret-0123456789abcdef-0123456789
+  # Scheduled jobs are tested by calling them directly, never by the scheduler.
+  notifications:
+    enabled: false
