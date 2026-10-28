@@ -1,0 +1,106 @@
+<ng-container *transloco="let t">
+  <p-dialog
+    [header]="t(isEdit() ? 'offers.editTitle' : 'offers.newTitle')"
+    [visible]="visible()"
+    (visibleChange)="visible.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [style]="{ width: '36rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+  >
+    <form class="form" [formGroup]="form" (ngSubmit)="save()">
+      <button type="submit" hidden></button>
+
+      <div class="field">
+        <label for="reference">{{ t('offers.fields.reference') }} *</label>
+        <input pInputText id="reference" formControlName="reference" placeholder="ALP-WINTER-01" />
+        @if (showError(form.controls.reference)) {
+          <p-message severity="error" size="small" variant="simple">
+            {{ t(form.controls.reference.hasError('required') ? 'validation.required' : 'validation.reference') }}
+          </p-message>
+        }
+      </div>
+
+      <div class="field">
+        <label for="title">{{ t('offers.fields.title') }} *</label>
+        <input pInputText id="title" formControlName="title" />
+        @if (showError(form.controls.title)) {
+          <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+        }
+      </div>
+
+      <div class="field">
+        <label for="description">{{ t('offers.fields.description') }}</label>
+        <textarea pTextarea id="description" formControlName="description" rows="2"></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="discountType">{{ t('offers.fields.type') }} *</label>
+          <p-select
+            inputId="discountType"
+            formControlName="discountType"
+            [options]="discountTypes()"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+            fluid
+          />
+        </div>
+        <div class="field">
+          <label for="discountValue">{{ t('offers.fields.value') }} *</label>
+          <p-inputnumber
+            inputId="discountValue"
+            formControlName="discountValue"
+            [minFractionDigits]="0"
+            [maxFractionDigits]="2"
+            [suffix]="isFixedAmount() ? '' : ' %'"
+            fluid
+          />
+          @if (showError(form.controls.discountValue)) {
+            <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+          } @else if (form.hasError('discountRange')) {
+            <p-message severity="error" size="small" variant="simple">
+              {{ t(isFixedAmount() ? 'validation.positiveAmount' : 'validation.percentage') }}
+            </p-message>
+          }
+        </div>
+      </div>
+
+      <div class="field-row">
+        @if (isFixedAmount()) {
+          <div class="field">
+            <label for="currency">{{ t('offers.fields.currency') }} *</label>
+            <p-select inputId="currency" formControlName="currency" [options]="currencies" appendTo="body" fluid />
+            @if (showError(form.controls.currency)) {
+              <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+            }
+          </div>
+        }
+        <div class="field">
+          <label for="minimumOrderQuantity">{{ t('offers.fields.minimumOrderQuantity') }}</label>
+          <p-inputnumber inputId="minimumOrderQuantity" formControlName="minimumOrderQuantity" [min]="1" [useGrouping]="false" fluid />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="validFrom">{{ t('offers.fields.validFrom') }} *</label>
+          <p-datepicker inputId="validFrom" formControlName="validFrom" dateFormat="dd.mm.yy" [showIcon]="true" appendTo="body" fluid />
+        </div>
+        <div class="field">
+          <label for="validTo">{{ t('offers.fields.validTo') }} *</label>
+          <p-datepicker inputId="validTo" formControlName="validTo" dateFormat="dd.mm.yy" [showIcon]="true" appendTo="body" fluid />
+        </div>
+      </div>
+      @if (form.hasError('validToBeforeFrom')) {
+        <p-message severity="error" size="small" variant="simple">{{ t('validation.validToBeforeFrom') }}</p-message>
+      }
+    </form>
+
+    <ng-template #footer>
+      <p-button [label]="t('common.cancel')" severity="secondary" [text]="true" (onClick)="visible.set(false)" />
+      <p-button [label]="t('offers.saveDraft')" [loading]="saving()" (onClick)="save()" />
+    </ng-template>
+  </p-dialog>
+</ng-container>

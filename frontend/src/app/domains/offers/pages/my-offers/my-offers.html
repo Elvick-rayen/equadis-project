@@ -1,0 +1,84 @@
+<ng-container *transloco="let t">
+  <div class="page-header">
+    <h1>{{ t('offers.title') }}</h1>
+    <p-button icon="pi pi-plus" [label]="t('common.new')" (onClick)="openNew()" />
+  </div>
+
+  <p-table
+    [value]="offerService.offers()"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [totalRecords]="offerService.totalRecords()"
+    [loading]="offerService.loading()"
+    [paginator]="true"
+    [first]="first()"
+    [rows]="pageSize"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    sortField="validFrom"
+    [sortOrder]="-1"
+    dataKey="id"
+    stripedRows
+  >
+    <ng-template #caption>
+      <div class="table-toolbar">
+        <label for="statusFilter">{{ t('offers.fields.status') }}:</label>
+        <p-select
+          inputId="statusFilter"
+          [options]="statusOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="status()"
+          (ngModelChange)="onStatusChange($event)"
+          size="small"
+        />
+      </div>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="reference">{{ t('offers.fields.reference') }} <p-sortIcon field="reference" /></th>
+        <th pSortableColumn="title">{{ t('offers.fields.title') }} <p-sortIcon field="title" /></th>
+        <th>{{ t('offers.fields.discount') }}</th>
+        <th pSortableColumn="validFrom">{{ t('offers.fields.validFrom') }} <p-sortIcon field="validFrom" /></th>
+        <th pSortableColumn="validTo">{{ t('offers.fields.validTo') }} <p-sortIcon field="validTo" /></th>
+        <th pSortableColumn="status">{{ t('offers.fields.status') }} <p-sortIcon field="status" /></th>
+        <th><span class="sr-only">{{ t('common.actions') }}</span></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-offer>
+      <tr>
+        <td>{{ offer.reference }}</td>
+        <td>
+          {{ offer.title }}
+          @if (offer.minimumOrderQuantity) {
+            <div class="muted">{{ t('offers.minimumOrder', { quantity: offer.minimumOrderQuantity }) }}</div>
+          }
+        </td>
+        <td>{{ offer | discount: language() }}</td>
+        <td>{{ offer.validFrom | date: 'dd.MM.yyyy' }}</td>
+        <td>{{ offer.validTo | date: 'dd.MM.yyyy' }}</td>
+        <td><p-tag [value]="t('offers.statuses.' + offer.status)" [severity]="severityOf(offer.status)" /></td>
+        <td class="row-actions">
+          @if (offer.allowedActions.includes('EDIT')) {
+            <p-button icon="pi pi-pencil" [label]="t('common.edit')" severity="secondary" size="small" [text]="true" (onClick)="openEdit(offer)" />
+          }
+          @if (offer.allowedActions.includes('PUBLISH')) {
+            <p-button icon="pi pi-send" [label]="t('offers.publish')" size="small" [text]="true" (onClick)="publish(offer)" />
+          }
+          @if (offer.allowedActions.includes('CLOSE')) {
+            <p-button icon="pi pi-lock" [label]="t('offers.close')" severity="danger" size="small" [text]="true" (onClick)="confirmClose(offer)" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="7">{{ t('offers.empty') }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-offer-form-dialog [(visible)]="dialogOpen" [offer]="editing()" />
+</ng-container>
