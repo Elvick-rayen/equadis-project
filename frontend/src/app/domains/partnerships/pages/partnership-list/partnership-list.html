@@ -1,0 +1,88 @@
+<ng-container *transloco="let t">
+  <div class="page-header">
+    <h1>{{ t('partnerships.title') }}</h1>
+    <p-button icon="pi pi-plus" [label]="t('common.new')" (onClick)="newOpen.set(true)" />
+  </div>
+
+  <p-table
+    [value]="partnershipService.partnerships()"
+    [lazy]="true"
+    (onLazyLoad)="onLazyLoad($event)"
+    [totalRecords]="partnershipService.totalRecords()"
+    [loading]="partnershipService.loading()"
+    [paginator]="true"
+    [first]="first()"
+    [rows]="pageSize"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    sortField="startDate"
+    [sortOrder]="-1"
+    dataKey="id"
+    stripedRows
+  >
+    <ng-template #caption>
+      <div class="table-toolbar">
+        <label for="statusFilter">{{ t('partnerships.fields.status') }}:</label>
+        <p-select
+          inputId="statusFilter"
+          [options]="filterOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="filter()"
+          (ngModelChange)="onFilterChange($event)"
+          size="small"
+        />
+      </div>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th>{{ t('partnerships.fields.supplier') }}</th>
+        <th>{{ t('partnerships.fields.retailer') }}</th>
+        <th pSortableColumn="startDate">{{ t('partnerships.fields.start') }} <p-sortIcon field="startDate" /></th>
+        <th pSortableColumn="endDate">{{ t('partnerships.fields.end') }} <p-sortIcon field="endDate" /></th>
+        <th>{{ t('partnerships.fields.status') }}</th>
+        <th><span class="sr-only">{{ t('common.actions') }}</span></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-p>
+      <tr>
+        <td>{{ p.supplierName }}</td>
+        <td>{{ p.retailerName }}</td>
+        <td>{{ p.startDate | date: 'dd.MM.yyyy' }}</td>
+        <td>{{ p.endDate | date: 'dd.MM.yyyy' }}</td>
+        <td>
+          <p-tag [value]="t('partnerships.statuses.' + p.status)" [severity]="severityOf(p.status)" />
+          @if (p.terminationReason) {
+            <div class="muted" [title]="p.terminationReason">{{ p.terminationReason }}</div>
+          }
+        </td>
+        <td class="row-actions">
+          @if (p.allowedActions.includes('RENEW')) {
+            <p-button icon="pi pi-refresh" [label]="t('partnerships.renew')" size="small" [text]="true" (onClick)="openRenew(p)" />
+          }
+          @if (p.allowedActions.includes('TERMINATE')) {
+            <p-button
+              icon="pi pi-times-circle"
+              [label]="t('partnerships.terminate')"
+              severity="danger"
+              size="small"
+              [text]="true"
+              (onClick)="openTerminate(p)"
+            />
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6">{{ t('partnerships.empty') }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-partnership-form-dialog [(visible)]="newOpen" />
+  <app-renew-dialog [(visible)]="renewOpen" [partnership]="renewing()" />
+  <app-terminate-dialog [(visible)]="terminateOpen" [partnership]="terminating()" />
+</ng-container>

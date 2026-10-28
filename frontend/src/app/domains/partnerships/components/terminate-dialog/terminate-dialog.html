@@ -1,0 +1,30 @@
+<ng-container *transloco="let t">
+  <p-dialog
+    [header]="t('partnerships.terminateTitle')"
+    [visible]="visible()"
+    (visibleChange)="visible.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [style]="{ width: '28rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+  >
+    @if (partnership(); as p) {
+      <div class="form">
+        <strong>{{ p.supplierName }} ↔ {{ p.retailerName }}</strong>
+        <p-message severity="warn" size="small">{{ t('partnerships.terminateWarning') }}</p-message>
+        <div class="field">
+          <label for="reason">{{ t('partnerships.fields.reason') }} *</label>
+          <textarea pTextarea id="reason" [formControl]="reason" rows="3" maxlength="500"></textarea>
+          @if (reason.invalid && reason.touched) {
+            <p-message severity="error" size="small" variant="simple">{{ t('errors.TERMINATION_REASON_REQUIRED') }}</p-message>
+          }
+        </div>
+      </div>
+    }
+
+    <ng-template #footer>
+      <p-button [label]="t('common.cancel')" severity="secondary" [text]="true" (onClick)="visible.set(false)" />
+      <p-button [label]="t('partnerships.terminate')" severity="danger" [loading]="saving()" (onClick)="save()" />
+    </ng-template>
+  </p-dialog>
+</ng-container>

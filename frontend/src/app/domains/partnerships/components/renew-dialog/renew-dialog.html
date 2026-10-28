@@ -1,0 +1,52 @@
+<ng-container *transloco="let t">
+  <p-dialog
+    [header]="t('partnerships.renewTitle')"
+    [visible]="visible()"
+    (visibleChange)="visible.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [style]="{ width: '28rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+  >
+    @if (partnership(); as p) {
+      <div class="form">
+        <div>
+          <strong>{{ p.supplierName }} ↔ {{ p.retailerName }}</strong>
+          <div class="muted">
+            {{ t('partnerships.currentPeriod') }}: {{ p.startDate | date: 'dd.MM.yyyy' }} – {{ p.endDate | date: 'dd.MM.yyyy' }}
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="newEndDate">{{ t('partnerships.fields.newEnd') }} *</label>
+          <p-datepicker
+            inputId="newEndDate"
+            [formControl]="newEndDate"
+            dateFormat="dd.mm.yy"
+            [minDate]="minDate()"
+            [showIcon]="true"
+            appendTo="body"
+            fluid
+          />
+        </div>
+
+        <div>
+          <div class="muted">{{ t('partnerships.history') }}</div>
+          @for (renewal of history(); track renewal.renewedOn + renewal.newEndDate) {
+            <div>
+              {{ renewal.renewedOn | date: 'dd.MM.yyyy' }}:
+              {{ renewal.previousEndDate | date: 'dd.MM.yyyy' }} → {{ renewal.newEndDate | date: 'dd.MM.yyyy' }}
+            </div>
+          } @empty {
+            <div>{{ t('partnerships.noRenewals') }}</div>
+          }
+        </div>
+      </div>
+    }
+
+    <ng-template #footer>
+      <p-button [label]="t('common.cancel')" severity="secondary" [text]="true" (onClick)="visible.set(false)" />
+      <p-button [label]="t('partnerships.renew')" [loading]="saving()" (onClick)="save()" />
+    </ng-template>
+  </p-dialog>
+</ng-container>

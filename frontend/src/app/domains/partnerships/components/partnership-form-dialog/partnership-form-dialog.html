@@ -1,0 +1,91 @@
+<ng-container *transloco="let t">
+  <p-dialog
+    [header]="t('partnerships.newTitle')"
+    [visible]="visible()"
+    (visibleChange)="visible.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [style]="{ width: '34rem' }"
+    [breakpoints]="{ '640px': '95vw' }"
+  >
+    <form class="form" [formGroup]="form" (ngSubmit)="save()">
+      <button type="submit" hidden></button>
+
+      <div class="field">
+        <label for="supplierId">{{ t('partnerships.fields.supplier') }} *</label>
+        <p-select
+          inputId="supplierId"
+          formControlName="supplierId"
+          [options]="partnershipService.supplierOptions()"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          filterBy="name"
+          [placeholder]="t('partnerships.placeholders.supplier')"
+          appendTo="body"
+          fluid
+        />
+        @if (showError(form.controls.supplierId)) {
+          <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+        }
+      </div>
+
+      <div class="field">
+        <label for="retailerId">{{ t('partnerships.fields.retailer') }} *</label>
+        <p-select
+          inputId="retailerId"
+          formControlName="retailerId"
+          [options]="partnershipService.retailerOptions()"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          filterBy="name"
+          [placeholder]="t('partnerships.placeholders.retailer')"
+          appendTo="body"
+          fluid
+        />
+        @if (showError(form.controls.retailerId)) {
+          <p-message severity="error" size="small" variant="simple">{{ t('validation.required') }}</p-message>
+        }
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="startDate">{{ t('partnerships.fields.start') }} *</label>
+          <p-datepicker
+            inputId="startDate"
+            formControlName="startDate"
+            dateFormat="dd.mm.yy"
+            [minDate]="minDate()"
+            [showIcon]="true"
+            appendTo="body"
+            fluid
+          />
+        </div>
+        <div class="field">
+          <label for="endDate">{{ t('partnerships.fields.end') }} *</label>
+          <p-datepicker
+            inputId="endDate"
+            formControlName="endDate"
+            dateFormat="dd.mm.yy"
+            [minDate]="minDate()"
+            [showIcon]="true"
+            appendTo="body"
+            fluid
+          />
+        </div>
+      </div>
+      @if (form.hasError('endBeforeStart')) {
+        <p-message severity="error" size="small" variant="simple">{{ t('errors.INVALID_DATE_RANGE') }}</p-message>
+      } @else if (form.hasError('tooLong')) {
+        <p-message severity="error" size="small" variant="simple">{{ t('errors.PARTNERSHIP_TOO_LONG') }}</p-message>
+      }
+      <small class="muted">{{ t('partnerships.periodHint') }}</small>
+    </form>
+
+    <ng-template #footer>
+      <p-button [label]="t('common.cancel')" severity="secondary" [text]="true" (onClick)="visible.set(false)" />
+      <p-button [label]="t('common.save')" [loading]="saving()" (onClick)="save()" />
+    </ng-template>
+  </p-dialog>
+</ng-container>
