@@ -2,6 +2,7 @@ services:
   postgres:
     image: postgres:17-alpine
     container_name: equadis-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_DB: equadis_portal
       POSTGRES_USER: portal
