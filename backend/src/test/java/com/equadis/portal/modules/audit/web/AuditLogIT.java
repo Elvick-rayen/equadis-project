@@ -44,14 +44,16 @@ class AuditLogIT {
 
 	@Test
 	void recordsCommittedActionsWithTheirActor() throws Exception {
+		String supplierName = unique("Audit Supplier");
+		String retailerName = unique("Audit Retailer");
 		long supplierId = idOf(mvc.perform(as(CurrentActor.admin(), post("/api/suppliers")).content("""
 				{"companyName": "%s", "contact": {"name": "Lukas", "email": "l@alpina.ch", "phone": "+41 44 210 33 10"},
 				 "countryCode": "CH"}
-				""".formatted(unique("Audit Supplier")))));
+				""".formatted(supplierName))));
 		long retailerId = idOf(mvc.perform(as(CurrentActor.admin(), post("/api/retailers")).content("""
 				{"storeName": "%s", "storeType": "ONLINE", "countryCode": "FR", "website": "https://a.example.fr",
 				 "contactEmail": "a@store.fr"}
-				""".formatted(unique("Audit Retailer")))));
+				""".formatted(retailerName))));
 		long partnershipId = idOf(mvc.perform(as(CurrentActor.admin(), post("/api/partnerships")).content("""
 				{"supplierId": %d, "retailerId": %d, "startDate": "%s", "endDate": "%s"}
 				""".formatted(supplierId, retailerId, TODAY, TODAY.plusMonths(6)))));
@@ -66,8 +68,15 @@ class AuditLogIT {
 					{"reference": "AUD-1", "title": "Audited offer", "discountType": "PERCENTAGE_DISCOUNT",
 					 "discountValue": 10, "validFrom": "%s", "validTo": "%s"}
 					""".formatted(TODAY, TODAY.plusDays(10)))));
+		// An administrator acting as the supplier is logged with the company's name, not its id.
+		mvc.perform(tokens.asAdminActingAs(CurrentActor.supplier(supplierId),
+				post("/api/suppliers/{s}/offers/{o}/publish", supplierId, offerId)))
+			.andExpect(status().isOk());
 
 		mvc.perform(as(CurrentActor.admin(), get("/api/audit-log")).param("subjectType", "PARTNERSHIP").param("size", "100"))
+			.andExpect(jsonPath("$.content[?(@.subjectId == %d && @.action == 'PARTNERSHIP_CREATED')].details"
+				.formatted(partnershipId), hasItem("Supplier %s, retailer %s, %s to %s".formatted(supplierName, retailerName,
+						TODAY, TODAY.plusMonths(6)))))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content[?(@.subjectId == %d)].action".formatted(partnershipId), hasItem("PARTNERSHIP_CREATED")))
 			.andExpect(jsonPath("$.content[?(@.subjectId == %d)].action".formatted(partnershipId), hasItem("PARTNERSHIP_TERMINATED")))
@@ -77,7 +86,11 @@ class AuditLogIT {
 			.andExpect(jsonPath("$.content[?(@.subjectId == %d)].actor".formatted(partnershipId), hasItem("test-admin")));
 		mvc.perform(as(CurrentActor.admin(), get("/api/audit-log")).param("subjectType", "OFFER").param("size", "100"))
 			.andExpect(jsonPath("$.content[?(@.subjectId == %d)].action".formatted(offerId), hasItem("OFFER_CREATED")))
-			.andExpect(jsonPath("$.content[?(@.subjectId == %d)].actor".formatted(offerId), hasItem("test-supplier")));
+			.andExpect(jsonPath("$.content[?(@.subjectId == %d)].actor".formatted(offerId), hasItem("test-supplier")))
+			.andExpect(jsonPath("$.content[?(@.subjectId == %d)].details".formatted(offerId),
+					hasItem("Supplier %s, reference AUD-1".formatted(supplierName))))
+			.andExpect(jsonPath("$.content[?(@.subjectId == %d && @.action == 'OFFER_PUBLISHED')].actor".formatted(offerId),
+					hasItem("test-admin (as %s)".formatted(supplierName))));
 
 		mvc.perform(as(CurrentActor.supplier(supplierId), get("/api/audit-log"))).andExpect(status().isForbidden());
 	}
