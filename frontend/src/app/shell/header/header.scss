@@ -51,6 +51,25 @@
   white-space: nowrap;
 }
 
+// The highlighted item is the current page: the router adds p-menubar-item-link-active to its
+// link. PrimeNG's own p-focus only remembers the last clicked item (it survives persona switches
+// and is lost on reload), so it is shown only while navigating with the keyboard.
+:host ::ng-deep .p-menubar-root-list {
+  > .p-menubar-item.p-focus > .p-menubar-item-content {
+    background: transparent;
+  }
+
+  &:focus-visible > .p-menubar-item.p-focus > .p-menubar-item-content,
+  > .p-menubar-item > .p-menubar-item-content:hover {
+    background: #12324f;
+  }
+
+  .p-menubar-item-link-active,
+  .p-menubar-item-link-active .p-menubar-item-icon {
+    color: var(--p-primary-color);
+  }
+}
+
 :host ::ng-deep .sign-out.p-button {
   color: #ffffff;
 }
