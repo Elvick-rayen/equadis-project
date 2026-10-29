@@ -59,7 +59,11 @@ export class SubscriptionService {
       .pipe(tap(() => this.reload()));
   }
 
-  private reload(): void {
+  /**
+   * Also called when a page opens: offers, partnerships and statuses change while other
+   * personas are used (BR-10, BR-12), and the retailer id alone would not trigger a fetch.
+   */
+  reload(): void {
     this.availableResource.reload();
     this.subscriptionsResource.reload();
   }

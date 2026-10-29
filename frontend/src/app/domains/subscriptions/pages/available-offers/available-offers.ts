@@ -24,6 +24,10 @@ export class AvailableOffers {
   /** Offer whose button is waiting for the API. */
   protected readonly busyOfferId = signal<number | null>(null);
 
+  constructor() {
+    this.subscriptionService.reload();
+  }
+
   protected subscribe(offer: AvailableOffer): void {
     this.busyOfferId.set(offer.id);
     this.subscriptionService.subscribe(offer.id).subscribe({

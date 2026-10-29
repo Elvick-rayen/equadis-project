@@ -27,6 +27,10 @@ export class MySubscriptions {
   }
   protected readonly busyId = signal<number | null>(null);
 
+  constructor() {
+    this.subscriptionService.reload();
+  }
+
   protected unsubscribe(subscription: Subscription): void {
     this.busyId.set(subscription.id);
     this.subscriptionService.unsubscribe(subscription.id).subscribe({

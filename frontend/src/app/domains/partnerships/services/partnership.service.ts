@@ -33,7 +33,7 @@ export class PartnershipService {
     stream: ({ params }) => this._http.get<Page<Partnership>>(PARTNERSHIPS_URL, { params: toHttpParams(params) }),
   });
 
-  /** Picker options, loaded the first time the "New" dialog asks for them. */
+  /** Picker options, loaded when the "New" dialog first asks for them, then reloaded on each opening. */
   private readonly _optionsWanted = signal(false);
 
   private readonly suppliersResource = rxResource({
@@ -71,8 +71,14 @@ export class PartnershipService {
     this._search.set(search);
   }
 
+  /** Called each time the "New" dialog opens, so companies added since the last time are listed. */
   loadCompanyOptions(): void {
-    this._optionsWanted.set(true);
+    if (this._optionsWanted()) {
+      this.suppliersResource.reload();
+      this.retailersResource.reload();
+    } else {
+      this._optionsWanted.set(true);
+    }
   }
 
   /** With its renewal history. */
